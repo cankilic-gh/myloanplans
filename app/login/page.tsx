@@ -93,7 +93,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,27 +102,27 @@ export default function LoginPage() {
         >
           <Card className="shadow-xl border-0">
             <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-2xl font-bold text-slate-900">
+              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Welcome Back
               </CardTitle>
-              <CardDescription className="text-base">
+              <CardDescription className="text-base dark:text-slate-400">
                 Sign in to your account to continue
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-600">{error}</p>
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     Email Address
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="email"
                       type="email"
@@ -142,11 +142,11 @@ export default function LoginPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     Password
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="password"
                       type="password"
@@ -171,7 +171,7 @@ export default function LoginPage() {
                       type="checkbox"
                       className="rounded border-slate-300 text-primary focus:ring-primary"
                     />
-                    <span className="text-slate-600">Remember me</span>
+                    <span className="text-slate-600 dark:text-slate-400">Remember me</span>
                   </label>
                   <Link
                     href="/forgot-password"
@@ -197,7 +197,7 @@ export default function LoginPage() {
                 </Button>
               </form>
 
-              <div className="mt-6 text-center text-sm text-slate-600">
+              <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
                 Don't have an account?{" "}
                 <Link href="/signup" className="text-primary hover:text-primary/80 font-medium">
                   Sign up
