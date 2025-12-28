@@ -12,46 +12,59 @@ type ChartDataPoint = {
   [key: string]: string | number; // Dynamic category keys
 };
 
-// Generate colors for categories
-const categoryColors = [
-  "#3b82f6", // blue
-  "#10b981", // emerald
-  "#f59e0b", // amber
-  "#ef4444", // red
-  "#8b5cf6", // violet
-  "#ec4899", // pink
-  "#06b6d4", // cyan
-  "#84cc16", // lime
-  "#f97316", // orange
-  "#6366f1", // indigo
-  "#14b8a6", // teal
-  "#a855f7", // purple
-];
-
-function getCategoryColor(categoryId: string, categoryIndex: number): string {
-  return categoryColors[categoryIndex % categoryColors.length];
+// Generate color based on category type and amount
+function getColorForAmount(categoryType: "INCOME" | "EXPENSE", amount: number, maxAmount: number): string {
+  if (amount === 0) {
+    // Return a very light color for zero amounts
+    return categoryType === "INCOME" ? "#d1fae5" : "#fee2e2";
+  }
+  
+  // Normalize amount to 0-1 range (0 = no amount, 1 = max amount)
+  const normalizedAmount = maxAmount > 0 ? Math.min(amount / maxAmount, 1) : 0;
+  
+  // Map normalized amount to color intensity (0.4 to 1.0 for better visibility)
+  const intensity = 0.4 + (normalizedAmount * 0.6);
+  
+  if (categoryType === "INCOME") {
+    // Green tones for income (emerald scale)
+    // Light: #86efac (emerald-300), Medium: #34d399 (emerald-400), Dark: #10b981 (emerald-500), Darker: #059669 (emerald-600)
+    if (intensity < 0.5) {
+      return "#86efac"; // emerald-300
+    } else if (intensity < 0.7) {
+      return "#34d399"; // emerald-400
+    } else if (intensity < 0.9) {
+      return "#10b981"; // emerald-500
+    } else {
+      return "#059669"; // emerald-600
+    }
+  } else {
+    // Red tones for expense
+    // Light: #fca5a5 (red-300), Medium: #f87171 (red-400), Dark: #ef4444 (red-500), Darker: #dc2626 (red-600)
+    if (intensity < 0.5) {
+      return "#fca5a5"; // red-300
+    } else if (intensity < 0.7) {
+      return "#f87171"; // red-400
+    } else if (intensity < 0.9) {
+      return "#ef4444"; // red-500
+    } else {
+      return "#dc2626"; // red-600
+    }
+  }
 }
 
 export default function Chart() {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [categoryColorMap, setCategoryColorMap] = useState<Map<string, string>>(new Map());
+  const [categoryColorMap, setCategoryColorMap] = useState<Map<string, number>>(new Map());
 
   async function loadChartData() {
     try {
       setLoading(true);
       
-      // Load categories first to get color mapping
+      // Load categories first
       const allCategories = await fetchCategories();
       setCategories(allCategories);
-      
-      // Create color map for categories
-      const colorMap = new Map<string, string>();
-      allCategories.forEach((cat, index) => {
-        colorMap.set(cat.id, getCategoryColor(cat.id, index));
-      });
-      setCategoryColorMap(colorMap);
       
       // Get last 12 months
       const today = new Date();
@@ -99,21 +112,48 @@ export default function Chart() {
       const virtualCategories: Category[] = [];
       
       recurringExpenses.forEach(recurring => {
-        const dueDate = new Date(recurring.nextDueDate);
-        const dueYear = dueDate.getFullYear();
-        const dueMonth = dueDate.getMonth();
+        // Parse date string directly to avoid timezone issues
+        // nextDueDate format: "2025-12-01" or "2025-12-01T00:00:00.000Z"
+        const dateStr = recurring.nextDueDate.split('T')[0]; // Get YYYY-MM-DD part
+        const [yearStr, monthStr] = dateStr.split('-');
+        const dueYear = parseInt(yearStr, 10);
+        const dueMonth = parseInt(monthStr, 10) - 1; // Convert to 0-indexed month
         
         // Calculate months ago (0 = current month, 11 = 11 months ago)
         const monthsAgo = (currentYear - dueYear) * 12 + (currentMonth - dueMonth);
         
         if (monthsAgo < 0 || monthsAgo >= 12) return; // Outside last 12 months
         
+        // Use 1-indexed month for monthKey (as we do for transactions)
         const monthKey = `${dueYear}-${String(dueMonth + 1).padStart(2, '0')}`;
         
-        // Use category if available, otherwise create a virtual category based on recurring type
+        // Use category if available AND category type matches recurring type, otherwise create a virtual category based on recurring type
         let categoryId: string;
+        let categoryType: "INCOME" | "EXPENSE" = recurring.type === "income" ? "INCOME" : "EXPENSE";
+        
         if (recurring.categoryId && recurring.category) {
-          categoryId = recurring.categoryId;
+          // Only use the category if its type matches the recurring expense type
+          // This ensures that a recurring expense with type "expense" doesn't show as income
+          // even if it's linked to an income category
+          if (recurring.category.type.toUpperCase() === categoryType) {
+            categoryId = recurring.categoryId;
+          } else {
+            // Category type doesn't match recurring type, create virtual category
+            const virtualCategoryName = recurring.name.toLowerCase().replace(/\s+/g, '-');
+            categoryId = `recurring-${virtualCategoryName}`;
+            
+            if (!allCategories.find(cat => cat.id === categoryId) && 
+                !virtualCategories.find(cat => cat.id === categoryId)) {
+              const virtualCategory: Category = {
+                id: categoryId,
+                userId: recurring.userId,
+                name: recurring.name,
+                type: categoryType,
+                createdAt: recurring.createdAt,
+              };
+              virtualCategories.push(virtualCategory);
+            }
+          }
         } else {
           // Create a virtual category ID for recurring expenses without category
           // Use the recurring name as a unique identifier
@@ -127,13 +167,10 @@ export default function Chart() {
               id: categoryId,
               userId: recurring.userId,
               name: recurring.name,
-              type: recurring.type === "income" ? "INCOME" : "EXPENSE",
+              type: categoryType,
               createdAt: recurring.createdAt,
             };
             virtualCategories.push(virtualCategory);
-            // Add color for virtual category
-            const colorIndex = allCategories.length + virtualCategories.length - 1;
-            colorMap.set(categoryId, getCategoryColor(categoryId, colorIndex));
           }
         }
         
@@ -157,6 +194,19 @@ export default function Chart() {
       // Combine real and virtual categories
       const allCategoriesWithVirtual = [...allCategories, ...virtualCategories];
       setCategories(allCategoriesWithVirtual);
+      
+      // Calculate max amount per category for color intensity
+      const categoryMaxAmounts = new Map<string, number>();
+      allCategoriesWithVirtual.forEach(cat => {
+        let maxAmount = 0;
+        monthDataMap.forEach((categoryMap) => {
+          const amount = categoryMap.get(cat.id) || 0;
+          if (amount > maxAmount) {
+            maxAmount = amount;
+          }
+        });
+        categoryMaxAmounts.set(cat.id, maxAmount);
+      });
       
       // Create chart data for last 12 months
       const chartDataPoints: ChartDataPoint[] = [];
@@ -182,6 +232,9 @@ export default function Chart() {
         
         chartDataPoints.push(dataPoint);
       }
+      
+      // Store max amounts for color calculation
+      setCategoryColorMap(categoryMaxAmounts as any);
       
       console.log("[Chart] Final chart data:", chartDataPoints);
       setChartData(chartDataPoints);
@@ -279,15 +332,27 @@ export default function Chart() {
               return category ? category.name : value;
             }}
           />
-          {categories.map((category) => (
-            <Bar
-              key={category.id}
-              dataKey={category.id}
-              stackId="a"
-              fill={categoryColorMap.get(category.id) || "#94a3b8"}
-              name={category.name}
-            />
-          ))}
+          {categories.map((category) => {
+            const maxAmount = categoryColorMap.get(category.id) || 1;
+            return (
+              <Bar
+                key={category.id}
+                dataKey={category.id}
+                stackId="a"
+                name={category.name}
+              >
+                {chartData.map((entry, index) => {
+                  const amount = entry[category.id] as number || 0;
+                  const color = getColorForAmount(
+                    category.type as "INCOME" | "EXPENSE",
+                    amount,
+                    maxAmount
+                  );
+                  return <Cell key={`cell-${index}`} fill={color} />;
+                })}
+              </Bar>
+            );
+          })}
         </BarChart>
       </ResponsiveContainer>
     </div>

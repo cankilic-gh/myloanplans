@@ -16,8 +16,26 @@ export async function PATCH(
       );
     }
 
+    // Get id from params or URL
+    let recurringId = params?.id;
+    
+    // If params.id is not available, try to get it from URL
+    if (!recurringId) {
+      const url = new URL(request.url);
+      const pathParts = url.pathname.split('/');
+      recurringId = pathParts[pathParts.length - 1];
+    }
+    
+    if (!recurringId) {
+      console.error("Recurring expense ID missing. Params:", params, "URL:", request.url);
+      return NextResponse.json(
+        { error: "Recurring expense ID is required" },
+        { status: 400 }
+      );
+    }
+
     const recurringExpense = await prisma.recurringExpense.findFirst({
-      where: { id: params.id, userId },
+      where: { id: recurringId, userId },
     });
 
     if (!recurringExpense) {
@@ -41,7 +59,7 @@ export async function PATCH(
     if (nextDueDate !== undefined) updateData.nextDueDate = new Date(nextDueDate);
 
     const updated = await prisma.recurringExpense.update({
-      where: { id: params.id },
+      where: { id: recurringId },
       data: updateData,
       include: {
         category: true,
@@ -73,8 +91,26 @@ export async function DELETE(
       );
     }
 
+    // Get id from params or URL
+    let recurringId = params?.id;
+    
+    // If params.id is not available, try to get it from URL
+    if (!recurringId) {
+      const url = new URL(request.url);
+      const pathParts = url.pathname.split('/');
+      recurringId = pathParts[pathParts.length - 1];
+    }
+    
+    if (!recurringId) {
+      console.error("Recurring expense ID missing. Params:", params, "URL:", request.url);
+      return NextResponse.json(
+        { error: "Recurring expense ID is required" },
+        { status: 400 }
+      );
+    }
+
     const recurringExpense = await prisma.recurringExpense.findFirst({
-      where: { id: params.id, userId },
+      where: { id: recurringId, userId },
     });
 
     if (!recurringExpense) {
@@ -85,7 +121,7 @@ export async function DELETE(
     }
 
     await prisma.recurringExpense.delete({
-      where: { id: params.id },
+      where: { id: recurringId },
     });
 
     return NextResponse.json({ success: true });

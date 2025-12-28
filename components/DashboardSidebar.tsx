@@ -144,7 +144,7 @@ export function DashboardSidebar({
           {/* Budget Overview Section */}
           <div>
             <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-2">
-              Budget Overview
+              Budget Management
             </h2>
             <div className="space-y-1">
               <button
@@ -161,7 +161,7 @@ export function DashboardSidebar({
                 style={{ 
                   paddingLeft: activeSection === "budget" ? "calc(1rem - 4px)" : "1rem",
                 }}
-                aria-label="Budget Overview"
+                aria-label="Budget Management"
                 aria-current={activeSection === "budget" ? "page" : undefined}
               >
                 {/* Active indicator */}
@@ -169,7 +169,7 @@ export function DashboardSidebar({
                   <span className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-sm" />
                 )}
                 <div className="relative">
-                  <span className="text-sm font-medium">Budget Overview</span>
+                  <span className="text-sm font-medium">Your Budget</span>
                 </div>
               </button>
             </div>

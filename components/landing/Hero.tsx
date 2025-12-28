@@ -90,8 +90,8 @@ export function Hero() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-loose"
             >
-              See exactly when you'll be debt-free. Track all your loans in one
-              place. Make smarter payment decisions with real-time insights.
+              See exactly when you'll be debt-free.{" "}
+              <strong>Take control of your monthly budget to free up cash</strong>, and track all your loans in one place.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -254,6 +254,21 @@ export function Hero() {
                   <p className="text-xs text-emerald-100 mt-1">Your freedom price</p>
                 </motion.div>
               </div>
+
+              {/* Floating Budget Surplus Card - Glassmorphism */}
+              <motion.div
+                initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 1.7, duration: 0.6, type: "spring" }}
+                className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/80 p-3 z-20"
+                style={{
+                  boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1), 0 0 20px rgba(16, 185, 129, 0.2)",
+                }}
+              >
+                <p className="text-xs font-medium text-slate-600 mb-1">Budget Surplus</p>
+                <p className="text-xl font-bold text-emerald-600 mb-0.5">+$450</p>
+                <p className="text-[10px] text-slate-500">Auto-allocated to Principal</p>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -261,4 +276,6 @@ export function Hero() {
     </section>
   );
 }
+
+
 

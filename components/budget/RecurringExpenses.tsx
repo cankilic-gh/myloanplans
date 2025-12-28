@@ -360,7 +360,6 @@ export default function RecurringExpenses() {
                     loadCategories(newType);
                   }}
                   className="w-full rounded-md border px-3 py-2 text-sm"
-                  disabled={isEditing}
                 >
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
@@ -397,7 +396,7 @@ export default function RecurringExpenses() {
                   onChange={(e) => {
                     const freq = e.target.value as Frequency;
                     setFormFrequency(freq);
-                    if (formNextDueDate) {
+                    if (!isEditing && formNextDueDate) {
                       const nextDate = calculateNextDueDate(formNextDueDate, freq);
                       setFormNextDueDate(nextDate);
                     }

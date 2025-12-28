@@ -152,27 +152,23 @@ export function Features() {
           </p>
         </motion.div>
 
-        {/* Bento Grid */}
+        {/* Features Grid - All Same Size */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
-          {features.map((feature, index) => {
+          {features.map((feature) => {
             const Icon = feature.icon;
-            const isLarge = index === 0 || index === 4;
-            const isWide = index === 2;
 
             return (
               <motion.div
                 key={feature.title}
                 variants={itemVariants}
                 custom={feature.delay}
-                className={`group relative bg-white rounded-2xl p-6 border border-slate-200 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 ${
-                  isLarge ? "md:row-span-2" : ""
-                } ${isWide ? "md:col-span-2" : ""}`}
+                className="group relative bg-white rounded-2xl p-6 border border-slate-200 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col"
               >
                 {/* Gradient Background on Hover */}
                 <div
@@ -187,10 +183,10 @@ export function Features() {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                <h3 className="text-xl font-bold text-slate-900 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-slate-600 leading-relaxed">
+                <p className="text-slate-600 leading-relaxed flex-1">
                   {feature.description}
                 </p>
 

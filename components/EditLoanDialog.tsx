@@ -127,3 +127,5 @@ export function EditLoanDialog({ loan, onSave, onClose }: EditLoanDialogProps) {
   );
 }
 
+
+

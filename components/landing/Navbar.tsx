@@ -31,7 +31,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Brand Name (No Logo) */}
           <Link href="/" className="flex items-center">
-            <span className="font-bold text-slate-900 dark:text-white text-xl tracking-tight">
+            <span className="font-bold text-black text-xl tracking-tight">
               My Loan Plans
             </span>
           </Link>
@@ -67,4 +67,6 @@ export function Navbar() {
     </motion.nav>
   );
 }
+
+
 

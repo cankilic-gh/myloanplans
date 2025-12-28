@@ -21,3 +21,5 @@ export const useUIStore = create<UIStore>((set) => ({
   setAuthMode: (mode) => set({ authMode: mode }),
 }));
 
+
+

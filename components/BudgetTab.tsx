@@ -20,10 +20,10 @@ export default function BudgetTab() {
         >
           <div className="text-center sm:text-left space-y-2 flex-1">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900">
-              Budget Overview
+              Budget Management
             </h1>
             <p className="text-base lg:text-lg text-slate-600">
-              Track your income, expenses, and recurring payments to stay on top of your finances
+              Your Budget
             </p>
           </div>
         </motion.div>

@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================
@@ -84,7 +85,7 @@ model LoanPlan {
   name   String
   userId String
 
-  // Financial Data (using Float for SQLite)
+  // Financial Data
   principalAmount       Float
   interestRate          Float // e.g., 0.0450 for 4.5%
   termMonths            Int
