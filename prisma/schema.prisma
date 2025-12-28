@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTH.JS V5 MODELS (NextAuth)
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String? // For credentials-based auth (hashed)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts         Account[]
+  sessions         Session[]
+  loanPlans        LoanPlan[]
+  budgetAccounts   BudgetAccount[]
+  budgetCategories BudgetCategory[]
+  transactions     Transaction[]
+  recurringExpenses RecurringExpense[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================
+// LOAN PLAN MODEL (Business Logic)
+// ============================================
+
+model LoanPlan {
+  id     String @id @default(cuid())
+  name   String
+  userId String
+
+  // Financial Data (using Float for SQLite)
+  principalAmount       Float
+  interestRate          Float // e.g., 0.0450 for 4.5%
+  termMonths            Int
+  downPayment           Float?
+  recurringExtraPayment Float?
+
+  // Dates
+  startDate DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // One-time payments stored as JSON (month -> amount mapping)
+  oneTimePayments String? @default("{}")
+
+  @@index([userId])
+  @@map("loan_plans")
+}
+
+// ============================================
+// BUDGET MODELS (From budget-desktop)
+// ============================================
+
+model BudgetAccount {
+  id       String  @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name     String
+  currency String  @default("USD")
+  transactions Transaction[]
+  recurringExpenses RecurringExpense[]
+  createdAt DateTime @default(now())
+
+  @@map("budget_accounts")
+}
+
+model BudgetCategory {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  type       String       // "INCOME" | "EXPENSE"
+  budgetLimit Float?
+  transactions Transaction[]
+  recurringExpenses RecurringExpense[]
+  createdAt  DateTime     @default(now())
+
+  @@map("budget_categories")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId   String
+  account     BudgetAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  categoryId String?
+  category    BudgetCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  amount      Float
+  currency    String   @default("USD")
+  note        String?
+  method      String?  // cash/card/transfer...
+  date        DateTime
+  source      String   @default("manual")
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([categoryId])
+  @@index([date])
+  @@map("transactions")
+}
+
+model RecurringExpense {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  amount      Float
+  type        String   // "expense" | "income"
+  frequency   String   // "weekly_2" | "monthly" | "semiannual" | "yearly"
+  description String?
+  categoryId  String?
+  category    BudgetCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  accountId   String?
+  account     BudgetAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  nextDueDate DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([nextDueDate])
+  @@index([type])
+  @@map("recurring_expenses")
+}
