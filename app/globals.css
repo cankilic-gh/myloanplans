@@ -5,6 +5,10 @@
   --foreground: #171717;
   --primary: #2563eb;
   --primary-foreground: #ffffff;
+  --input: #ffffff;
+  --input-foreground: #171717;
+  --border: #e2e8f0;
+  --ring: #2563eb;
 }
 
 @theme inline {
@@ -12,17 +16,24 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-input: var(--input);
+  --color-input-foreground: var(--input-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode disabled - always use light theme */
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --input: #1a1a1a;
+    --input-foreground: #ededed;
+    --border: #374151;
+    --ring: #3b82f6;
   }
-} */
+}
 
 body {
   background: var(--background);
