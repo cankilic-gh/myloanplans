@@ -4,7 +4,7 @@ import { getUserIdFromRequest } from "@/lib/api-helpers";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserIdFromRequest(request);
@@ -16,8 +16,10 @@ export async function PATCH(
       );
     }
 
+    // Await params in Next.js 16
+    const resolvedParams = await params;
     // Get id from params or URL
-    let recurringId = params?.id;
+    let recurringId = resolvedParams?.id;
     
     // If params.id is not available, try to get it from URL
     if (!recurringId) {
@@ -27,7 +29,7 @@ export async function PATCH(
     }
     
     if (!recurringId) {
-      console.error("Recurring expense ID missing. Params:", params, "URL:", request.url);
+      console.error("Recurring expense ID missing. Params:", resolvedParams, "URL:", request.url);
       return NextResponse.json(
         { error: "Recurring expense ID is required" },
         { status: 400 }
@@ -79,7 +81,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserIdFromRequest(request);
@@ -91,8 +93,10 @@ export async function DELETE(
       );
     }
 
+    // Await params in Next.js 16
+    const resolvedParams = await params;
     // Get id from params or URL
-    let recurringId = params?.id;
+    let recurringId = resolvedParams?.id;
     
     // If params.id is not available, try to get it from URL
     if (!recurringId) {
@@ -102,7 +106,7 @@ export async function DELETE(
     }
     
     if (!recurringId) {
-      console.error("Recurring expense ID missing. Params:", params, "URL:", request.url);
+      console.error("Recurring expense ID missing. Params:", resolvedParams, "URL:", request.url);
       return NextResponse.json(
         { error: "Recurring expense ID is required" },
         { status: 400 }

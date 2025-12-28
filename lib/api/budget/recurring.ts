@@ -37,7 +37,7 @@ export interface NewRecurringExpense {
   frequency: Frequency;
   description?: string | null;
   categoryId?: string | null;
-  accountId: string;
+  accountId?: string | null;
   nextDueDate: string; // YYYY-MM-DD
 }
 

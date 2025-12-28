@@ -4,7 +4,7 @@ import { getUserIdFromRequest } from "@/lib/api-helpers";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserIdFromRequest(request);
@@ -16,8 +16,10 @@ export async function DELETE(
       );
     }
 
+    // Await params in Next.js 16
+    const resolvedParams = await params;
     const transaction = await prisma.transaction.findFirst({
-      where: { id: params.id, userId },
+      where: { id: resolvedParams.id, userId },
     });
 
     if (!transaction) {
@@ -28,7 +30,7 @@ export async function DELETE(
     }
 
     await prisma.transaction.delete({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
     });
 
     return NextResponse.json({ success: true });

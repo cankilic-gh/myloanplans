@@ -4,7 +4,7 @@ import { getUserIdFromRequest } from "@/lib/api-helpers";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserIdFromRequest(request);
@@ -16,8 +16,10 @@ export async function PATCH(
       );
     }
 
+    // Await params in Next.js 16
+    const resolvedParams = await params;
     const plan = await prisma.loanPlan.findFirst({
-      where: { id: params.id, userId },
+      where: { id: resolvedParams.id, userId },
     });
 
     if (!plan) {
@@ -50,7 +52,7 @@ export async function PATCH(
     if (oneTimePayments !== undefined) updateData.oneTimePayments = JSON.stringify(oneTimePayments);
 
     const updated = await prisma.loanPlan.update({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
       data: updateData,
     });
 
@@ -66,7 +68,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getUserIdFromRequest(request);
@@ -78,8 +80,10 @@ export async function DELETE(
       );
     }
 
+    // Await params in Next.js 16
+    const resolvedParams = await params;
     const plan = await prisma.loanPlan.findFirst({
-      where: { id: params.id, userId },
+      where: { id: resolvedParams.id, userId },
     });
 
     if (!plan) {
@@ -90,7 +94,7 @@ export async function DELETE(
     }
 
     await prisma.loanPlan.delete({
-      where: { id: params.id },
+      where: { id: resolvedParams.id },
     });
 
     return NextResponse.json({ success: true });

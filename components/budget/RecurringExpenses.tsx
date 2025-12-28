@@ -51,7 +51,7 @@ export default function RecurringExpenses() {
     try {
       const allCategories = await fetchCategories();
       const categoryType = type || (activeTab === "all" ? "expense" : activeTab);
-      const filtered = categoryType === "all" 
+      const filtered = !categoryType
         ? allCategories 
         : allCategories.filter(c => c.type.toLowerCase() === categoryType);
       setCategories(filtered);
@@ -140,9 +140,9 @@ export default function RecurringExpenses() {
           amount: parseFloat(formAmount),
           type: formType,
           frequency: formFrequency,
-          description: formDescription || null,
-          categoryId: formCategoryId || null,
-          accountId: formAccountId || null,
+          description: formDescription || undefined,
+          categoryId: formCategoryId || undefined,
+          accountId: formAccountId || undefined,
           nextDueDate: formNextDueDate,
         });
       } else {
@@ -151,9 +151,9 @@ export default function RecurringExpenses() {
           amount: parseFloat(formAmount),
           type: formType,
           frequency: formFrequency,
-          description: formDescription || null,
-          categoryId: formCategoryId || null,
-          accountId: formAccountId || null,
+          description: formDescription || undefined,
+          categoryId: formCategoryId || undefined,
+          accountId: formAccountId || undefined,
           nextDueDate: formNextDueDate,
         });
       }
