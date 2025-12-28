@@ -338,7 +338,7 @@ export function LoanTab({
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       {plans.length === 0 ? (
         <EmptyLoanState onCreateFirst={onAddNewPlan} />
       ) : (
@@ -351,20 +351,20 @@ export function LoanTab({
           >
             <div className="text-center sm:text-left space-y-2 flex-1">
               <div className="flex items-center gap-3 pl-16 lg:pl-0 min-h-[3.5rem] sm:min-h-[4rem] lg:min-h-[4.5rem]">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
                   {activePlan?.name || "Loan Calculator"}
                 </h1>
                 {activePlan && (
                   <button
                     onClick={() => setEditingLoan(activePlan)}
-                    className="flex-shrink-0 p-2 hover:bg-slate-200/50 rounded-lg transition-colors group"
+                    className="flex-shrink-0 p-2 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-lg transition-colors group"
                     aria-label="Edit loan plan"
                   >
-                    <Settings2 className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+                    <Settings2 className="h-5 w-5 text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors" />
                   </button>
                 )}
               </div>
-              <p className="text-base lg:text-lg text-slate-600 pl-16 lg:pl-0">
+              <p className="text-base lg:text-lg text-slate-600 dark:text-slate-400 pl-16 lg:pl-0">
                 Calculate your payments with precision and explore different payment scenarios
               </p>
             </div>
