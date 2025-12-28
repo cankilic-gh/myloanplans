@@ -37,7 +37,7 @@ export function EmptyLoanState({ onCreateFirst }: EmptyLoanStateProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 text-center"
+        className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-3 text-center"
       >
         No Loan Plans Yet
       </motion.h2>
@@ -47,7 +47,7 @@ export function EmptyLoanState({ onCreateFirst }: EmptyLoanStateProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="text-base text-slate-600 mb-8 text-center max-w-md"
+        className="text-base text-slate-600 dark:text-slate-400 mb-8 text-center max-w-md"
       >
         Let's get you on the path to financial freedom. Create your first loan
         plan and see exactly when you'll be debt-free.
@@ -74,7 +74,7 @@ export function EmptyLoanState({ onCreateFirst }: EmptyLoanStateProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.5 }}
-        className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500"
+        className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 dark:text-slate-400"
       >
         <div className="flex items-center gap-1">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
