@@ -24,15 +24,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --input: #1a1a1a;
-    --input-foreground: #ededed;
-    --border: #374151;
-    --ring: #3b82f6;
-  }
+/* Dark mode styles - now controlled by class */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --input: #1a1a1a;
+  --input-foreground: #ededed;
+  --border: #374151;
+  --ring: #3b82f6;
 }
 
 body {

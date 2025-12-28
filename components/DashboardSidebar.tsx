@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Plus, Menu, X, LogOut } from "lucide-react";
+import { Plus, Menu, X, LogOut, Moon, Sun } from "lucide-react";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -38,6 +39,7 @@ export function DashboardSidebar({
 }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
+  const { isDark, toggle: toggleDarkMode } = useDarkMode();
 
   const handleLogout = () => {
     // Clear session storage
@@ -83,6 +85,24 @@ export function DashboardSidebar({
         <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">
           Welcome back! 👋
         </p>
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-sm text-slate-700 dark:text-slate-300"
+          aria-label="Toggle dark mode"
+        >
+          {isDark ? (
+            <>
+              <Sun className="h-4 w-4" />
+              <span>Light Mode</span>
+            </>
+          ) : (
+            <>
+              <Moon className="h-4 w-4" />
+              <span>Dark Mode</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Loan Plans and Budget Overview - Middle */}

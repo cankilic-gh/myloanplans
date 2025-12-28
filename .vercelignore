@@ -1,0 +1,13 @@
+# Ignore files that cause deployment issues
+.env.local
+.env*.local
+node_modules
+.next
+.vercel
+*.log
+.DS_Store
+coverage
+.nyc_output
+dist
+build
+scripts
