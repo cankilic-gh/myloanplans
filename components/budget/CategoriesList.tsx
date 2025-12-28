@@ -39,7 +39,7 @@ export default function CategoriesList() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border p-4">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4">
         <div className="h-4 bg-slate-200 rounded w-32 mb-4 animate-pulse"></div>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -54,11 +54,11 @@ export default function CategoriesList() {
     <>
       <div className="bg-white rounded-lg border p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-3">
-          <div className="text-sm font-semibold text-slate-700">Categories Expense / Income</div>
+          <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">Categories Expense / Income</div>
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="px-3 py-1 text-xs bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors"
+            className="px-3 py-1 text-xs bg-slate-900 dark:bg-slate-700 text-white rounded-md hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
           >
             Add
           </button>
@@ -71,8 +71,8 @@ export default function CategoriesList() {
             onClick={() => setSelectedType("all")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               selectedType === "all"
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                ? "bg-slate-900 dark:bg-slate-700 text-white"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
             }`}
           >
             All
@@ -82,8 +82,8 @@ export default function CategoriesList() {
             onClick={() => setSelectedType("EXPENSE")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               selectedType === "EXPENSE"
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                ? "bg-slate-900 dark:bg-slate-700 text-white"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
             }`}
           >
             Expense
@@ -93,8 +93,8 @@ export default function CategoriesList() {
             onClick={() => setSelectedType("INCOME")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               selectedType === "INCOME"
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                ? "bg-slate-900 dark:bg-slate-700 text-white"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
             }`}
           >
             Income
@@ -104,15 +104,15 @@ export default function CategoriesList() {
         {/* Categories list */}
         <div className="flex-1 overflow-y-auto space-y-2">
           {filteredCategories.length === 0 ? (
-            <div className="text-sm text-slate-500">No categories found.</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">No categories found.</div>
           ) : (
             filteredCategories.map((cat) => (
               <div
                 key={cat.id}
                 className={`px-3 py-2 rounded-md text-sm flex items-center justify-between group ${
                   cat.type === "INCOME"
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
+                    ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                    : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
                 }`}
               >
                 <span>{cat.name}</span>
@@ -132,7 +132,7 @@ export default function CategoriesList() {
                       }
                     }
                   }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-200 rounded text-red-700"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-200 dark:hover:bg-red-900/30 rounded text-red-700 dark:text-red-400"
                   title="Delete category"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -146,9 +146,9 @@ export default function CategoriesList() {
       {/* Add Category Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-full max-w-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-900">Add Category</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Add Category</h2>
               <button
                 type="button"
                 onClick={() => {
@@ -156,7 +156,7 @@ export default function CategoriesList() {
                   setNewCategoryName("");
                   setAddError(null);
                 }}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
               >
                 ✕
               </button>
@@ -164,7 +164,7 @@ export default function CategoriesList() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs text-slate-500 mb-1">Name</label>
+                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Name</label>
                 <input
                   type="text"
                   value={newCategoryName}
@@ -185,7 +185,7 @@ export default function CategoriesList() {
                 </select>
               </div>
               {addError && (
-                <div className="text-xs text-red-600">{addError}</div>
+                <div className="text-xs text-red-600 dark:text-red-400">{addError}</div>
               )}
               <div className="flex gap-3">
                 <button
@@ -195,7 +195,7 @@ export default function CategoriesList() {
                     setNewCategoryName("");
                     setAddError(null);
                   }}
-                  className="flex-1 px-4 py-2 text-sm bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                 >
                   Cancel
                 </button>
@@ -220,7 +220,7 @@ export default function CategoriesList() {
                       setAddError(err instanceof Error ? err.message : "Failed to add category");
                     }
                   }}
-                  className="flex-1 px-4 py-2 text-sm bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm bg-slate-900 dark:bg-slate-700 text-white rounded-md hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
                 >
                   Add
                 </button>
