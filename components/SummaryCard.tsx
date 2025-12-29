@@ -101,14 +101,14 @@ export function SummaryCard({
             {/* Months Paid Dropdown - Centralized Control */}
             {onPaidMonthsChange && (
               <div className="flex items-center gap-3">
-                <Label htmlFor="paidMonthsSummary" className="text-sm font-medium text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                <Label htmlFor="paidMonthsSummary" className="text-sm font-medium text-slate-700 whitespace-nowrap">
                   Paid Months:
                 </Label>
                 <select
                   id="paidMonthsSummary"
                   value={paidMonths}
                   onChange={(e) => onPaidMonthsChange(Number(e.target.value))}
-                  className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors text-slate-900 dark:text-slate-50"
+                  className="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors text-slate-900"
                 >
                   {Array.from({ length: schedule.length + 1 }, (_, i) => (
                     <option key={i} value={i}>
@@ -130,16 +130,16 @@ export function SummaryCard({
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200"
                 >
-                  <div className={`p-2 rounded-lg bg-white dark:bg-slate-700 ${item.color}`}>
+                  <div className={`p-2 rounded-lg bg-white ${item.color}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-muted-foreground">
                       {item.label}
                     </p>
-                    <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+                    <p className="text-lg font-semibold text-slate-900">
                       {item.value}
                     </p>
                   </div>

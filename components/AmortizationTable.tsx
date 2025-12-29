@@ -173,9 +173,9 @@ export function AmortizationTable({
               <div className="overflow-hidden border rounded-lg">
                 <div ref={scrollContainerRef} className="max-h-[500px] overflow-y-auto scroll-smooth">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-slate-50 dark:bg-slate-900 sticky top-0 z-10">
+                    <thead className="bg-slate-50 sticky top-0 z-10">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-200 uppercase tracking-wider bg-slate-50 dark:bg-slate-900">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider bg-slate-50">
                           Month
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider bg-slate-50">
@@ -195,7 +195,7 @@ export function AmortizationTable({
                         </th>
                       </tr>
                     </thead>
-                    <tbody ref={tableBodyRef} className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+                    <tbody ref={tableBodyRef} className="bg-white divide-y divide-gray-200">
                     <AnimatePresence>
                       {schedule.map((row, index) => {
                         const isPaid = index < paidMonths;
@@ -212,15 +212,15 @@ export function AmortizationTable({
                             delay: index * 0.01,
                           }}
                           className={cn(
-                            "hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300",
-                            isPaid && "bg-emerald-50/50 dark:bg-emerald-900/20",
+                            "hover:bg-slate-50 transition-all duration-300",
+                            isPaid && "bg-emerald-50/50",
                             isHighlighted && "ring-2 ring-emerald-500 ring-inset shadow-lg"
                           )}
                         >
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-50">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">
                             {row.month}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 dark:text-slate-200">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700">
                             {formatCurrency(row.paymentAmount)}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-emerald-600 font-medium">
@@ -250,7 +250,7 @@ export function AmortizationTable({
                               className="w-24 h-8 text-xs"
                             />
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-50">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900">
                             {formatCurrency(row.remainingBalance)}
                           </td>
                         </motion.tr>
@@ -270,8 +270,8 @@ export function AmortizationTable({
             </div>
           )}
 
-          <div className="mt-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
-            <p className="text-sm text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+          <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+            <p className="text-sm text-indigo-900 flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               <span>
                 <strong>Tip:</strong> Use the "Months Paid" selector to see your payoff amount at any point. 

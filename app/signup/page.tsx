@@ -120,7 +120,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:bg-slate-950 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -129,21 +129,21 @@ export default function SignUpPage() {
         >
           <Card className="shadow-xl border-0">
             <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <CardTitle className="text-2xl font-bold text-slate-900">
                 Create Your Account
               </CardTitle>
-              <CardDescription className="text-base dark:text-slate-400">
+              <CardDescription className="text-base">
                 Sign up to start managing your loan plans
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <Label htmlFor="name" className="text-sm font-medium text-slate-700">
                     Full Name
                   </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
                       id="name"
                       type="text"
@@ -166,11 +166,11 @@ export default function SignUpPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <Label htmlFor="email" className="text-sm font-medium text-slate-700">
                     Email Address
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
                       id="email"
                       type="email"
@@ -193,11 +193,11 @@ export default function SignUpPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700">
                     Password
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
                       id="password"
                       type="password"
@@ -217,15 +217,15 @@ export default function SignUpPage() {
                       {errors.password}
                     </p>
                   )}
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Must be at least 8 characters</p>
+                  <p className="text-xs text-slate-500">Must be at least 8 characters</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
                     Confirm Password
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <Input
                       id="confirmPassword"
                       type="password"
@@ -254,7 +254,7 @@ export default function SignUpPage() {
                     className="mt-1 rounded border-slate-300 text-primary focus:ring-primary"
                     required
                   />
-                  <label htmlFor="terms" className="text-slate-600 dark:text-slate-400 cursor-pointer">
+                  <label htmlFor="terms" className="text-slate-600 cursor-pointer">
                     I agree to the{" "}
                     <a href="#" className="text-primary hover:text-primary/80 font-medium">
                       Terms of Service
@@ -267,8 +267,8 @@ export default function SignUpPage() {
                 </div>
 
                 {errors.submit && (
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.submit}</p>
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-600">{errors.submit}</p>
                   </div>
                 )}
 
@@ -288,7 +288,7 @@ export default function SignUpPage() {
                 </Button>
               </form>
 
-              <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+              <div className="mt-6 text-center text-sm text-slate-600">
                 Already have an account?{" "}
                 <Link href="/login" className="text-primary hover:text-primary/80 font-medium">
                   Sign in

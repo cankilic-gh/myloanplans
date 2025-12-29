@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Plus, Menu, X, LogOut, Moon, Sun } from "lucide-react";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { Plus, Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -39,7 +38,6 @@ export function DashboardSidebar({
 }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
-  const { isDark, toggle: toggleDarkMode } = useDarkMode();
 
   const handleLogout = () => {
     // Clear session storage
@@ -70,39 +68,21 @@ export function DashboardSidebar({
   };
 
   const SidebarContent = () => (
-    <aside className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-hidden">
+    <aside className="flex flex-col h-full bg-white border-r border-slate-200 overflow-hidden">
       {/* User Profile Area - Top */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-900">
+      <div className="p-6 border-b border-slate-200 bg-gradient-to-br from-slate-50 to-white">
         <div className="flex items-center gap-3 mb-2">
           <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-lg shadow-sm">
             {userName.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-slate-900 dark:text-slate-50 truncate">{userName}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-300 truncate">{userEmail}</p>
+            <p className="font-semibold text-slate-900 truncate">{userName}</p>
+            <p className="text-sm text-slate-500 truncate">{userEmail}</p>
           </div>
         </div>
-        <p className="text-sm text-slate-600 dark:text-slate-200 mt-2">
+        <p className="text-sm text-slate-600 mt-2">
           Welcome back! 👋
         </p>
-        {/* Dark Mode Toggle */}
-        <button
-          onClick={toggleDarkMode}
-          className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-sm text-slate-700 dark:text-slate-200"
-          aria-label="Toggle dark mode"
-        >
-          {isDark ? (
-            <>
-              <Sun className="h-4 w-4" />
-              <span>Light Mode</span>
-            </>
-          ) : (
-            <>
-              <Moon className="h-4 w-4" />
-              <span>Dark Mode</span>
-            </>
-          )}
-        </button>
       </div>
 
       {/* Loan Plans and Budget Overview - Middle */}
@@ -115,7 +95,7 @@ export function DashboardSidebar({
             </h2>
             <div className="space-y-1">
               {plans.length === 0 ? (
-                <div className="text-center py-8 text-slate-400 dark:text-slate-500 text-sm">
+                <div className="text-center py-8 text-slate-400 text-sm">
                   No plans yet. Create your first plan!
                 </div>
               ) : (
@@ -129,11 +109,11 @@ export function DashboardSidebar({
                     type="button"
                     className={cn(
                       "relative w-full text-left py-2.5 transition-colors duration-150 cursor-pointer",
-                      "hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg",
+                      "hover:bg-slate-100 rounded-lg",
                       "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                       activePlanId === plan.id && activeSection === "loan"
-                        ? "bg-blue-50 dark:bg-blue-900/20 text-slate-900 dark:text-slate-50 font-medium pl-4 pr-3"
-                        : "text-slate-700 dark:text-slate-200 pl-4 pr-3"
+                        ? "bg-blue-50 text-slate-900 font-medium pl-4 pr-3"
+                        : "text-slate-700 pl-4 pr-3"
                     )}
                     style={{ 
                       paddingLeft: activePlanId === plan.id && activeSection === "loan" ? "calc(1rem - 4px)" : "1rem",
@@ -151,7 +131,7 @@ export function DashboardSidebar({
                           {plan.name}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
+                      <p className="text-xs text-slate-500 mt-0.5">
                         {formatDate(plan.createdAt)}
                       </p>
                     </div>
@@ -172,11 +152,11 @@ export function DashboardSidebar({
                 type="button"
                 className={cn(
                   "relative w-full text-left py-2.5 transition-colors duration-150 cursor-pointer",
-                  "hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg",
+                  "hover:bg-slate-100 rounded-lg",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   activeSection === "budget"
-                    ? "bg-blue-50 dark:bg-blue-900/20 text-slate-900 dark:text-slate-50 font-medium pl-4 pr-3"
-                    : "text-slate-700 dark:text-slate-200 pl-4 pr-3"
+                    ? "bg-blue-50 text-slate-900 font-medium pl-4 pr-3"
+                    : "text-slate-700 pl-4 pr-3"
                 )}
                 style={{ 
                   paddingLeft: activeSection === "budget" ? "calc(1rem - 4px)" : "1rem",
@@ -198,7 +178,7 @@ export function DashboardSidebar({
       </div>
 
       {/* Add New Plan Button - Bottom */}
-      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-2 flex-shrink-0">
+      <div className="p-4 border-t border-slate-200 bg-slate-50/50 space-y-2 flex-shrink-0">
         <Button
           onClick={onAddNewPlan}
           className="w-full h-11 bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
@@ -210,7 +190,7 @@ export function DashboardSidebar({
         <Button
           onClick={handleLogout}
           variant="ghost"
-          className="w-full h-10 text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700"
+          className="w-full h-10 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
           aria-label="Logout"
         >
           <LogOut className="h-4 w-4 mr-2" />
@@ -225,10 +205,10 @@ export function DashboardSidebar({
       {/* Mobile Hamburger Button */}
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-lg border border-slate-200"
         aria-label="Open menu"
       >
-        <Menu className="h-6 w-6 text-slate-700 dark:text-slate-200" />
+        <Menu className="h-6 w-6 text-slate-700" />
       </button>
 
       {/* Desktop Sidebar */}
@@ -256,10 +236,10 @@ export function DashboardSidebar({
             <SidebarContent />
             <button
               onClick={() => setIsMobileOpen(false)}
-              className="absolute top-4 right-4 p-2 rounded-lg bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800"
+              className="absolute top-4 right-4 p-2 rounded-lg bg-white shadow-lg border border-slate-200"
               aria-label="Close menu"
             >
-              <X className="h-5 w-5 text-slate-700 dark:text-slate-200" />
+              <X className="h-5 w-5 text-slate-700" />
             </button>
           </motion.div>
         </>

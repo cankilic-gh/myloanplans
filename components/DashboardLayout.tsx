@@ -38,7 +38,7 @@ export function DashboardLayout({
   return (
     <>
       <SessionWarning show={showWarning} />
-      <div className="flex h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden">
+      <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Left Panel - Sidebar */}
       <DashboardSidebar
         plans={plans}

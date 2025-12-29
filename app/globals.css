@@ -24,22 +24,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode styles - now controlled by class */
-.dark {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
-  --input: #1e293b;
-  --input-foreground: #f1f5f9;
-  --border: #475569;
-  --ring: #3b82f6;
-}
-
 body {
   background: #ffffff;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-}
-
-.dark body {
-  background: #0f172a;
 }

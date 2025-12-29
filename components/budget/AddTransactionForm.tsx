@@ -98,13 +98,13 @@ export default function AddTransactionForm() {
 
   return (
     <>
-      <div className="bg-white dark:bg-slate-900 rounded-lg border dark:border-slate-800 p-4 flex flex-col">
+      <div className="bg-white rounded-lg border p-4 flex flex-col">
         <div className="flex items-center justify-between mb-4">
-          <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">Add transaction</div>
+          <div className="text-sm font-semibold text-slate-700">Add transaction</div>
           <button
             type="button"
             onClick={() => setIsAddCategoryModalOpen(true)}
-            className="px-3 py-1 text-xs bg-slate-900 dark:bg-slate-700 text-white rounded-md hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
+            className="px-3 py-1 text-xs bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors"
           >
             Add Categories
           </button>
@@ -114,7 +114,7 @@ export default function AddTransactionForm() {
           <div className="flex flex-col space-y-3">
             {/* Account */}
             <div>
-              <label className="block text-xs text-slate-500 dark:text-slate-300 mb-1">Account</label>
+              <label className="block text-xs text-slate-500 mb-1">Account</label>
               <select
                 value={accountId ?? ""}
                 onChange={(e) => setAccountId(e.target.value || null)}
@@ -188,11 +188,11 @@ export default function AddTransactionForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-md bg-slate-900 dark:bg-slate-700 text-white px-4 py-2 text-sm disabled:opacity-60 hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
+                className="w-full rounded-md bg-slate-900 text-white px-4 py-2 text-sm disabled:opacity-60 hover:bg-slate-800 transition-colors"
               >
                 {loading ? "Adding…" : "Add"}
               </button>
-              {error && <div className="mt-2 text-xs text-red-600 dark:text-red-400">Error: {error}</div>}
+              {error && <div className="mt-2 text-xs text-red-600">Error: {error}</div>}
             </div>
           </div>
         </form>
@@ -201,9 +201,9 @@ export default function AddTransactionForm() {
       {/* Add Category Modal */}
       {isAddCategoryModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-slate-900 rounded-lg p-6 w-full max-w-sm">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">Add Category</h2>
+              <h2 className="text-lg font-semibold text-slate-900">Add Category</h2>
               <button
                 type="button"
                 onClick={() => {
@@ -211,7 +211,7 @@ export default function AddTransactionForm() {
                   setNewCategoryName("");
                   setAddCategoryError(null);
                 }}
-                className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+                className="text-slate-400 hover:text-slate-600"
               >
                 ✕
               </button>
@@ -240,7 +240,7 @@ export default function AddTransactionForm() {
                 </select>
               </div>
                 {addCategoryError && (
-                <div className="text-xs text-red-600 dark:text-red-400">{addCategoryError}</div>
+                <div className="text-xs text-red-600">{addCategoryError}</div>
               )}
               <div className="flex gap-3">
                 <button
@@ -250,7 +250,7 @@ export default function AddTransactionForm() {
                     setNewCategoryName("");
                     setAddCategoryError(null);
                   }}
-                  className="flex-1 px-4 py-2 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -274,7 +274,7 @@ export default function AddTransactionForm() {
                       setAddCategoryError(err instanceof Error ? err.message : "Failed to add category");
                     }
                   }}
-                  className="flex-1 px-4 py-2 text-sm bg-slate-900 dark:bg-slate-700 text-white rounded-md hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors"
                 >
                   Add
                 </button>
