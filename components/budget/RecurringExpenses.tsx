@@ -209,11 +209,11 @@ export default function RecurringExpenses() {
 
   return (
     <>
-      <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4 h-full flex flex-col min-h-0">
+      <div className="bg-white dark:bg-slate-900 rounded-lg border dark:border-slate-800 p-4 h-full flex flex-col min-h-0">
         {/* Header with tabs */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">Recurring Expenses / Income</div>
+            <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">Recurring Expenses / Income</div>
             <button
               type="button"
               onClick={openAddModal}
@@ -234,8 +234,8 @@ export default function RecurringExpenses() {
               }}
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 activeTab === "all"
-                  ? "bg-slate-900 dark:bg-slate-700 text-white border border-slate-900 dark:border-slate-700"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
+                  ? "bg-slate-900 dark:bg-slate-700 text-white border border-slate-900 dark:border-slate-800"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
               }`}
             >
               All
@@ -250,7 +250,7 @@ export default function RecurringExpenses() {
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 activeTab === "expense"
                   ? "bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
               }`}
             >
               Expenses
@@ -265,7 +265,7 @@ export default function RecurringExpenses() {
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 activeTab === "income"
                   ? "bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
               }`}
             >
               Income
@@ -275,11 +275,11 @@ export default function RecurringExpenses() {
 
         {/* List */}
         {loading ? (
-          <div className="flex-1 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex-1 flex items-center justify-center text-sm text-slate-500 dark:text-slate-300">
             Loading...
           </div>
         ) : items.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex-1 flex items-center justify-center text-sm text-slate-500 dark:text-slate-300">
             No recurring {activeTab === "all" ? "items" : activeTab + "s"} yet.
           </div>
         ) : (
@@ -293,17 +293,17 @@ export default function RecurringExpenses() {
                     ? item.type === "expense"
                       ? "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-800"
                       : "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-800"
-                    : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
+                    : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700"
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <div className="font-medium text-sm text-slate-900 dark:text-slate-100">{item.name}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="font-medium text-sm text-slate-900 dark:text-slate-50">{item.name}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-300 mt-1">
                       {frequencyLabels[item.frequency]} • Due: {item.nextDueDate}
                     </div>
                     {item.description && (
-                      <div className="text-xs text-slate-600 dark:text-slate-300 mt-1">{item.description}</div>
+                      <div className="text-xs text-slate-600 dark:text-slate-200 mt-1">{item.description}</div>
                     )}
                   </div>
                   <div
@@ -334,9 +334,9 @@ export default function RecurringExpenses() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">
                 {isEditing ? "Edit" : "Add"} Recurring {formType === "expense" ? "Expense" : "Income"}
               </h2>
               <button
@@ -350,7 +350,7 @@ export default function RecurringExpenses() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Type</label>
+                <label className="block text-xs text-slate-500 dark:text-slate-300 mb-1">Type</label>
                 <select
                   value={formType}
                   onChange={(e) => {
@@ -492,16 +492,16 @@ export default function RecurringExpenses() {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Delete Recurring Item</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          <div className="bg-white dark:bg-slate-900 rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-4">Delete Recurring Item</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-200 mb-6">
               Are you sure you want to delete "{selectedItem?.name}"? This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                className="flex-1 px-4 py-2 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
               >
                 Cancel
               </button>

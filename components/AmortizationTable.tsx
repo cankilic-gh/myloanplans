@@ -173,9 +173,9 @@ export function AmortizationTable({
               <div className="overflow-hidden border rounded-lg">
                 <div ref={scrollContainerRef} className="max-h-[500px] overflow-y-auto scroll-smooth">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
+                    <thead className="bg-slate-50 dark:bg-slate-900 sticky top-0 z-10">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider bg-slate-50 dark:bg-slate-800">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-200 uppercase tracking-wider bg-slate-50 dark:bg-slate-900">
                           Month
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider bg-slate-50">
@@ -195,7 +195,7 @@ export function AmortizationTable({
                         </th>
                       </tr>
                     </thead>
-                    <tbody ref={tableBodyRef} className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+                    <tbody ref={tableBodyRef} className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
                     <AnimatePresence>
                       {schedule.map((row, index) => {
                         const isPaid = index < paidMonths;
@@ -217,10 +217,10 @@ export function AmortizationTable({
                             isHighlighted && "ring-2 ring-emerald-500 ring-inset shadow-lg"
                           )}
                         >
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-50">
                             {row.month}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-700 dark:text-slate-200">
                             {formatCurrency(row.paymentAmount)}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-emerald-600 font-medium">
@@ -250,7 +250,7 @@ export function AmortizationTable({
                               className="w-24 h-8 text-xs"
                             />
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-50">
                             {formatCurrency(row.remainingBalance)}
                           </td>
                         </motion.tr>

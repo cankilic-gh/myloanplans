@@ -197,14 +197,14 @@ export function AuthModal() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 30, stiffness: 300 }}
-          className="bg-white dark:bg-slate-800 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-md sm:max-h-[90vh] overflow-hidden"
+          className="bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-md sm:max-h-[90vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-800">
             {/* Title and Close Button */}
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
                 {authMode === "login" ? "Welcome Back" : "Create Account"}
               </h2>
               <button
@@ -212,7 +212,7 @@ export function AuthModal() {
                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 aria-label="Close"
               >
-                <X className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+                <X className="h-5 w-5 text-slate-500 dark:text-slate-300" />
               </button>
             </div>
 
@@ -222,8 +222,8 @@ export function AuthModal() {
                 onClick={() => setAuthMode("login")}
                 className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all ${
                   authMode === "login"
-                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 shadow-sm"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100"
                 }`}
               >
                 Sign In
@@ -232,8 +232,8 @@ export function AuthModal() {
                 onClick={() => setAuthMode("signup")}
                 className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all ${
                   authMode === "signup"
-                    ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 shadow-sm"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100"
                 }`}
               >
                 Sign Up
@@ -375,7 +375,7 @@ export function AuthModal() {
                     {signupErrors.password && (
                       <p className="text-sm text-red-500 mt-1">{signupErrors.password}</p>
                     )}
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-300 mt-1">
                       Must be at least 8 characters
                     </p>
                   </div>

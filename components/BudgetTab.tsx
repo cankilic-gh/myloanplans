@@ -10,7 +10,7 @@ import CategoriesList from "@/components/budget/CategoriesList";
 
 export default function BudgetTab() {
   return (
-    <div className="min-h-full bg-white dark:bg-slate-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:bg-slate-950 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -19,10 +19,10 @@ export default function BudgetTab() {
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div className="text-center sm:text-left space-y-2 flex-1">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-50">
               Budget Management
             </h1>
-            <p className="text-base lg:text-lg text-slate-600 dark:text-slate-400">
+            <p className="text-base lg:text-lg text-slate-600 dark:text-slate-300">
               Your Budget
             </p>
           </div>

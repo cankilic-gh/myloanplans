@@ -30,7 +30,7 @@ export default function Home() {
   // Show loading state while checking authentication
   if (isChecking) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900">
+      <main className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
         <div className="text-center">
           <p className="text-slate-600">Loading...</p>
         </div>
@@ -78,7 +78,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-white dark:bg-slate-900">
+      <div className="min-h-screen bg-white dark:bg-slate-950">
         <Navbar />
         <main>
           <Hero />

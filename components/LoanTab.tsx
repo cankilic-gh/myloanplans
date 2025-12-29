@@ -338,7 +338,7 @@ export function LoanTab({
   };
 
   return (
-    <div className="min-h-full bg-white dark:bg-slate-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:bg-slate-950 py-8 px-4 sm:px-6 lg:px-8">
       {plans.length === 0 ? (
         <EmptyLoanState onCreateFirst={onAddNewPlan} />
       ) : (
@@ -351,7 +351,7 @@ export function LoanTab({
           >
             <div className="text-center sm:text-left space-y-2 flex-1">
               <div className="flex items-center gap-3 pl-16 lg:pl-0 min-h-[3.5rem] sm:min-h-[4rem] lg:min-h-[4.5rem]">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-50 leading-tight">
                   {activePlan?.name || "Loan Calculator"}
                 </h1>
                 {activePlan && (
@@ -364,7 +364,7 @@ export function LoanTab({
                   </button>
                 )}
               </div>
-              <p className="text-base lg:text-lg text-slate-600 dark:text-slate-400 pl-16 lg:pl-0">
+              <p className="text-base lg:text-lg text-slate-600 dark:text-slate-300 pl-16 lg:pl-0">
                 Calculate your payments with precision and explore different payment scenarios
               </p>
             </div>

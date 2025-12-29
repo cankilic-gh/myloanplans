@@ -144,10 +144,10 @@ export default function TransactionsList() {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4 h-full flex flex-col min-h-0">
+    <div className="bg-white dark:bg-slate-900 rounded-lg border dark:border-slate-800 p-4 h-full flex flex-col min-h-0">
       <div className="mb-3">
         <div className="flex items-center justify-between mb-3">
-          <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">Recent transactions</div>
+          <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">Recent transactions</div>
         </div>
 
         {/* Filter Tabs */}
@@ -157,8 +157,8 @@ export default function TransactionsList() {
             onClick={() => setActiveFilter("all")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               activeFilter === "all"
-                ? "bg-slate-900 dark:bg-slate-700 text-white border border-slate-900 dark:border-slate-700"
-                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
+                ? "bg-slate-900 dark:bg-slate-700 text-white border border-slate-900 dark:border-slate-800"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
             }`}
           >
             All
@@ -169,7 +169,7 @@ export default function TransactionsList() {
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               activeFilter === "expense"
                 ? "bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800"
-                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
             }`}
           >
             Expenses
@@ -180,7 +180,7 @@ export default function TransactionsList() {
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               activeFilter === "income"
                 ? "bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800"
-                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-transparent"
             }`}
           >
             Income
@@ -188,10 +188,10 @@ export default function TransactionsList() {
         </div>
       </div>
       
-      {loading && <div className="text-sm text-slate-500 dark:text-slate-400">Loading…</div>}
+      {loading && <div className="text-sm text-slate-500 dark:text-slate-300">Loading…</div>}
       {error && <div className="text-sm text-red-600 dark:text-red-400">Error: {error}</div>}
       {!loading && !error && rows.length === 0 && (
-        <div className="text-sm text-slate-500 dark:text-slate-400">No transactions yet.</div>
+        <div className="text-sm text-slate-500 dark:text-slate-300">No transactions yet.</div>
       )}
       
       {!loading && !error && rows.length > 0 && (
@@ -204,11 +204,11 @@ export default function TransactionsList() {
               return (
                 <div
                   key={r.id}
-                  className="group flex items-center justify-between p-2 border dark:border-slate-700 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  className="group flex items-center justify-between p-2 border dark:border-slate-800 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-600 dark:text-slate-400">{new Date(r.date).toISOString().slice(0, 10)}</span>
+                      <span className="text-slate-600 dark:text-slate-300">{new Date(r.date).toISOString().slice(0, 10)}</span>
                       {r.isRecurring && (
                         <span className="px-1.5 py-0.5 text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded">
                           Recurring
@@ -219,14 +219,14 @@ export default function TransactionsList() {
                           ? "text-emerald-600" 
                           : categoryType === "expense"
                           ? "text-red-600"
-                          : "text-slate-600 dark:text-slate-400"
+                          : "text-slate-600 dark:text-slate-300"
                       }`}>
                         {categoryType === "income" ? "+" : categoryType === "expense" ? "-" : ""}
                         {formatCurrency(r.amount, r.currency)}
                       </span>
                     </div>
                     {r.note && (
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">{r.note}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-300 mt-1 truncate">{r.note}</div>
                     )}
                   </div>
                   {!r.isRecurring && (

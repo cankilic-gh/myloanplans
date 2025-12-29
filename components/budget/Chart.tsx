@@ -268,8 +268,8 @@ export default function Chart() {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4 flex items-center justify-center min-h-[300px]">
-        <div className="text-sm text-slate-500 dark:text-slate-400">Loading chart...</div>
+      <div className="bg-white dark:bg-slate-900 rounded-lg border dark:border-slate-800 p-4 flex items-center justify-center min-h-[300px]">
+        <div className="text-sm text-slate-500 dark:text-slate-300">Loading chart...</div>
       </div>
     );
   }
@@ -278,8 +278,8 @@ export default function Chart() {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 shadow-lg">
-          <p className="font-semibold text-slate-900 dark:text-slate-100 mb-2">{label}</p>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 shadow-lg">
+          <p className="font-semibold text-slate-900 dark:text-slate-50 mb-2">{label}</p>
           <div className="space-y-1">
             {payload.map((entry: any, index: number) => {
               const category = categories.find(cat => cat.id === entry.dataKey);
@@ -290,8 +290,8 @@ export default function Chart() {
                     className="w-3 h-3 rounded"
                     style={{ backgroundColor: entry.color }}
                   />
-                  <span className="text-slate-600 dark:text-slate-300">{category.name}:</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
+                  <span className="text-slate-600 dark:text-slate-200">{category.name}:</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-50">
                     {formatCurrency(entry.value)}
                   </span>
                 </div>
@@ -305,8 +305,8 @@ export default function Chart() {
   };
 
   return (
-      <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4 flex flex-col">
-      <div className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Income vs Expenses (Last 12 Months)</div>
+      <div className="bg-white dark:bg-slate-900 rounded-lg border dark:border-slate-800 p-4 flex flex-col">
+      <div className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">Income vs Expenses (Last 12 Months)</div>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />

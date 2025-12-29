@@ -26,11 +26,11 @@
 
 /* Dark mode styles - now controlled by class */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --input: #1a1a1a;
-  --input-foreground: #ededed;
-  --border: #374151;
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --input: #1e293b;
+  --input-foreground: #f1f5f9;
+  --border: #475569;
   --ring: #3b82f6;
 }
 
@@ -41,5 +41,5 @@ body {
 }
 
 .dark body {
-  background: #0a0a0a;
+  background: #0f172a;
 }
