@@ -268,7 +268,7 @@ export default function Chart() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border border-slate-200 p-4 flex items-center justify-center min-h-[300px]">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg flex items-center justify-center min-h-[300px]">
         <div className="text-sm text-slate-500">Loading chart...</div>
       </div>
     );
@@ -305,7 +305,7 @@ export default function Chart() {
   };
 
   return (
-      <div className="bg-white rounded-lg border border-slate-200 p-4 flex flex-col">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg flex flex-col">
       <div className="text-sm font-semibold text-slate-700 mb-4">Income vs Expenses (Last 12 Months)</div>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>

@@ -98,7 +98,7 @@ export default function AddTransactionForm() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border border-slate-200 p-4 flex flex-col">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm font-semibold text-slate-700">Add transaction</div>
           <button

@@ -209,7 +209,7 @@ export default function RecurringExpenses() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border border-slate-200 p-4 h-full flex flex-col min-h-0">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg h-full flex flex-col min-h-0">
         {/* Header with tabs */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">

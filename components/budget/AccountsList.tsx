@@ -40,7 +40,7 @@ export default function AccountsList() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border border-slate-200 p-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg">
         <div className="h-4 bg-slate-200 rounded w-32 mb-4 animate-pulse"></div>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -53,7 +53,7 @@ export default function AccountsList() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border border-slate-200 p-4 h-full flex flex-col">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm font-semibold text-slate-700">Bank Accounts</div>
           <button
