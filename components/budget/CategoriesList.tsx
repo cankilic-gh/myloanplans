@@ -39,7 +39,7 @@ export default function CategoriesList() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border p-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
         <div className="h-4 bg-slate-200 rounded w-32 mb-4 animate-pulse"></div>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -52,7 +52,7 @@ export default function CategoriesList() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border p-4 h-full flex flex-col">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-3">
           <div className="text-sm font-semibold text-slate-700">Categories Expense / Income</div>
           <button
@@ -111,8 +111,8 @@ export default function CategoriesList() {
                 key={cat.id}
                 className={`px-3 py-2 rounded-md text-sm flex items-center justify-between group ${
                   cat.type === "INCOME"
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
+                    ? "bg-emerald-50 text-emerald-700 border border-slate-200 border-emerald-200"
+                    : "bg-red-50 text-red-700 border border-slate-200 border-red-200"
                 }`}
               >
                 <span>{cat.name}</span>
@@ -169,7 +169,7 @@ export default function CategoriesList() {
                   type="text"
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                   placeholder="Category name"
                 />
               </div>
@@ -178,7 +178,7 @@ export default function CategoriesList() {
                 <select
                   value={newCategoryType}
                   onChange={(e) => setNewCategoryType(e.target.value as "EXPENSE" | "INCOME")}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="EXPENSE">Expense</option>
                   <option value="INCOME">Income</option>

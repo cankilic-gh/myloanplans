@@ -209,7 +209,7 @@ export default function RecurringExpenses() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border p-4 h-full flex flex-col min-h-0">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 h-full flex flex-col min-h-0">
         {/* Header with tabs */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
@@ -234,8 +234,8 @@ export default function RecurringExpenses() {
               }}
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 activeTab === "all"
-                  ? "bg-slate-900 text-white border border-slate-900"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-transparent"
+                  ? "bg-slate-900 text-white border border-slate-200 border-slate-900"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 border-transparent"
               }`}
             >
               All
@@ -249,8 +249,8 @@ export default function RecurringExpenses() {
               }}
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 activeTab === "expense"
-                  ? "bg-red-100 text-red-700 border border-red-300"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-transparent"
+                  ? "bg-red-100 text-red-700 border border-slate-200 border-red-300"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 border-transparent"
               }`}
             >
               Expenses
@@ -264,8 +264,8 @@ export default function RecurringExpenses() {
               }}
               className={`px-3 py-1 text-xs rounded-md transition-colors ${
                 activeTab === "income"
-                  ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-transparent"
+                  ? "bg-emerald-100 text-emerald-700 border border-slate-200 border-emerald-300"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 border-transparent"
               }`}
             >
               Income
@@ -288,7 +288,7 @@ export default function RecurringExpenses() {
               <div
                 key={item.id}
                 onClick={() => setSelectedId(item.id)}
-                className={`p-3 rounded-md border cursor-pointer transition-colors ${
+                className={`p-3 rounded-md border border-slate-200 cursor-pointer transition-colors ${
                   selectedId === item.id
                     ? item.type === "expense"
                       ? "bg-red-50 border-red-300"
@@ -359,7 +359,7 @@ export default function RecurringExpenses() {
                     setFormCategoryId(null);
                     loadCategories(newType);
                   }}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
@@ -372,7 +372,7 @@ export default function RecurringExpenses() {
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                   required
                 />
               </div>
@@ -384,7 +384,7 @@ export default function RecurringExpenses() {
                   step="0.01"
                   value={formAmount}
                   onChange={(e) => setFormAmount(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                   required
                 />
               </div>
@@ -401,7 +401,7 @@ export default function RecurringExpenses() {
                       setFormNextDueDate(nextDate);
                     }
                   }}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="weekly_2">2 Weeks</option>
                   <option value="monthly">Monthly</option>
@@ -416,7 +416,7 @@ export default function RecurringExpenses() {
                   type="date"
                   value={formNextDueDate}
                   onChange={(e) => setFormNextDueDate(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                   required
                 />
               </div>
@@ -426,7 +426,7 @@ export default function RecurringExpenses() {
                 <select
                   value={formCategoryId ?? ""}
                   onChange={(e) => setFormCategoryId(e.target.value || null)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="">None</option>
                   {categories
@@ -444,7 +444,7 @@ export default function RecurringExpenses() {
                 <select
                   value={formAccountId ?? ""}
                   onChange={(e) => setFormAccountId(e.target.value || null)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="">None</option>
                   {accounts.map((acc) => (
@@ -460,7 +460,7 @@ export default function RecurringExpenses() {
                 <textarea
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm resize-none"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm resize-none"
                   rows={3}
                 />
               </div>

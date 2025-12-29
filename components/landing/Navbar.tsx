@@ -54,26 +54,14 @@ export function Navbar() {
             </Button>
           </div>
 
-          {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center gap-2">
-            {/* Dark Mode Toggle */}
-            {mounted && (
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-700"
-                aria-label="Toggle dark mode"
-              >
-                {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </button>
-            )}
-            <button
-              className="p-2 text-slate-700 hover:text-primary transition-colors"
-              onClick={() => openAuthModal("login")}
-              aria-label="Sign in"
-            >
-              <LogIn className="h-6 w-6" />
-            </button>
-          </div>
+          {/* Mobile Sign In Button - Opens Auth Modal Directly */}
+          <button
+            className="md:hidden p-2 text-slate-700 hover:text-primary transition-colors"
+            onClick={() => openAuthModal("login")}
+            aria-label="Sign in"
+          >
+            <LogIn className="h-6 w-6" />
+          </button>
         </div>
       </div>
     </motion.nav>

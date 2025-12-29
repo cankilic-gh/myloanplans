@@ -144,7 +144,7 @@ export default function TransactionsList() {
   };
 
   return (
-    <div className="bg-white rounded-lg border p-4 h-full flex flex-col min-h-0">
+    <div className="bg-white rounded-lg border border-slate-200 p-4 h-full flex flex-col min-h-0">
       <div className="mb-3">
         <div className="flex items-center justify-between mb-3">
           <div className="text-sm font-semibold text-slate-700">Recent transactions</div>
@@ -157,8 +157,8 @@ export default function TransactionsList() {
             onClick={() => setActiveFilter("all")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               activeFilter === "all"
-                ? "bg-slate-900 text-white border border-slate-900"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-transparent"
+                ? "bg-slate-900 text-white border border-slate-200 border-slate-900"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 border-transparent"
             }`}
           >
             All
@@ -168,8 +168,8 @@ export default function TransactionsList() {
             onClick={() => setActiveFilter("expense")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               activeFilter === "expense"
-                ? "bg-red-100 text-red-700 border border-red-300"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-transparent"
+                ? "bg-red-100 text-red-700 border border-slate-200 border-red-300"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 border-transparent"
             }`}
           >
             Expenses
@@ -179,8 +179,8 @@ export default function TransactionsList() {
             onClick={() => setActiveFilter("income")}
             className={`px-3 py-1 text-xs rounded-md transition-colors ${
               activeFilter === "income"
-                ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-transparent"
+                ? "bg-emerald-100 text-emerald-700 border border-slate-200 border-emerald-300"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 border-transparent"
             }`}
           >
             Income
@@ -204,7 +204,7 @@ export default function TransactionsList() {
               return (
                 <div
                   key={r.id}
-                  className="group flex items-center justify-between p-2 border rounded-md hover:bg-slate-50 transition-colors"
+                  className="group flex items-center justify-between p-2 border border-slate-200 rounded-md hover:bg-slate-50 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 text-sm">

@@ -108,7 +108,7 @@ export function SummaryCard({
                   id="paidMonthsSummary"
                   value={paidMonths}
                   onChange={(e) => onPaidMonthsChange(Number(e.target.value))}
-                  className="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors text-slate-900"
+                  className="px-3 py-2 border border-slate-200 border-slate-300 rounded-lg text-sm bg-white hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors text-slate-900"
                 >
                   {Array.from({ length: schedule.length + 1 }, (_, i) => (
                     <option key={i} value={i}>
@@ -130,7 +130,7 @@ export function SummaryCard({
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200 border-slate-200"
                 >
                   <div className={`p-2 rounded-lg bg-white ${item.color}`}>
                     <Icon className="h-5 w-5" />
@@ -161,7 +161,7 @@ export function SummaryCard({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="mt-6 p-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl border border-emerald-400 shadow-lg"
+              className="mt-6 p-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl border border-slate-200 border-emerald-400 shadow-lg"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

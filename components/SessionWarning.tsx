@@ -18,7 +18,7 @@ export function SessionWarning({ show }: SessionWarningProps) {
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="fixed top-4 right-4 z-[100] max-w-sm"
         >
-          <div className="bg-amber-500 text-white rounded-lg shadow-2xl p-4 border border-amber-400">
+          <div className="bg-amber-500 text-white rounded-lg shadow-2xl p-4 border border-slate-200 border-amber-400">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 <AlertTriangle className="h-5 w-5" />

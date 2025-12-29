@@ -21,7 +21,7 @@ export function LoanProgressBar({
       : 0;
 
   return (
-    <div className="mt-6 p-4 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-lg border border-emerald-200">
+    <div className="mt-6 p-4 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-lg border border-slate-200 border-emerald-200">
       {/* Progress Label */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-medium text-slate-700">Payment Progress</p>

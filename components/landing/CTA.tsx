@@ -32,7 +32,7 @@ export function CTA() {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-4"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border border-slate-200 border-white/30 mb-4"
           >
             <Sparkles className="h-10 w-10 text-white" />
           </motion.div>

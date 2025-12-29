@@ -40,7 +40,7 @@ export default function AccountsList() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border p-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
         <div className="h-4 bg-slate-200 rounded w-32 mb-4 animate-pulse"></div>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -53,7 +53,7 @@ export default function AccountsList() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border p-4 h-full flex flex-col">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm font-semibold text-slate-700">Bank Accounts</div>
           <button
@@ -72,7 +72,7 @@ export default function AccountsList() {
             accounts.map((acc) => (
               <div
                 key={acc.id}
-                className="p-3 border rounded-md bg-slate-50 hover:bg-slate-100 transition-colors"
+                className="p-3 border border-slate-200 rounded-md bg-slate-50 hover:bg-slate-100 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -114,7 +114,7 @@ export default function AccountsList() {
                   type="text"
                   value={newAccountName}
                   onChange={(e) => setNewAccountName(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                   placeholder="Account name"
                 />
               </div>
@@ -123,7 +123,7 @@ export default function AccountsList() {
                 <select
                   value={newAccountCurrency}
                   onChange={(e) => setNewAccountCurrency(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="USD">USD</option>
                   <option value="EUR">EUR</option>

@@ -63,7 +63,7 @@ export function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-full text-emerald-700 text-sm font-medium"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-slate-200 border-emerald-200 rounded-full text-emerald-700 text-sm font-medium"
             >
               <TrendingUp className="h-4 w-4" />
               <span>Trusted by thousands of users</span>
@@ -157,7 +157,7 @@ export function Hero() {
             <div className="absolute -inset-4 bg-gradient-to-r from-primary/30 via-emerald-500/30 to-primary/30 rounded-3xl blur-3xl opacity-60" />
 
             {/* Dashboard Preview Card - Glassmorphism */}
-            <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/50 p-6">
+            <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 border-slate-200/50 p-6">
               {/* Card Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
@@ -175,7 +175,7 @@ export function Hero() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.6 }}
-                  className="bg-gradient-to-br from-primary/10 via-blue-50 to-emerald-50 rounded-xl p-4 border border-primary/30 shadow-lg"
+                  className="bg-gradient-to-br from-primary/10 via-blue-50 to-emerald-50 rounded-xl p-4 border border-slate-200 border-primary/30 shadow-lg"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-slate-900">Home Mortgage</h3>
@@ -200,7 +200,7 @@ export function Hero() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
-                  className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-4 border border-slate-200 shadow-md"
+                  className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-4 border border-slate-200 border-slate-200 shadow-md"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm font-medium text-slate-700">Payment Progress</p>
@@ -233,7 +233,7 @@ export function Hero() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.2 + idx * 0.15, duration: 0.5 }}
-                      className="bg-white rounded-xl p-3 border border-slate-200 text-center shadow-sm hover:shadow-md transition-shadow"
+                      className="bg-white rounded-xl p-3 border border-slate-200 border-slate-200 text-center shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.color} mx-auto mb-2`} />
                       <p className="text-xs text-slate-500 mb-1">{stat.label}</p>
@@ -247,7 +247,7 @@ export function Hero() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.5, duration: 0.6, type: "spring" }}
-                  className="mt-4 p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-xl border border-emerald-400"
+                  className="mt-4 p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-xl border border-slate-200 border-emerald-400"
                 >
                   <p className="text-xs text-emerald-50 mb-1">Today's Payoff</p>
                   <p className="text-2xl font-bold text-white">$185,230</p>
@@ -260,7 +260,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: -20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 1.7, duration: 0.6, type: "spring" }}
-                className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/80 p-3 z-20"
+                className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200 border-slate-200/80 p-3 z-20"
                 style={{
                   boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1), 0 0 20px rgba(16, 185, 129, 0.2)",
                 }}

@@ -98,7 +98,7 @@ export default function AddTransactionForm() {
 
   return (
     <>
-      <div className="bg-white rounded-lg border p-4 flex flex-col">
+      <div className="bg-white rounded-lg border border-slate-200 p-4 flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm font-semibold text-slate-700">Add transaction</div>
           <button
@@ -118,7 +118,7 @@ export default function AddTransactionForm() {
               <select
                 value={accountId ?? ""}
                 onChange={(e) => setAccountId(e.target.value || null)}
-                className="w-full rounded-md border px-3 py-2 text-sm"
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 required
               >
                 <option value="">Select account</option>
@@ -136,7 +136,7 @@ export default function AddTransactionForm() {
               <select
                 value={categoryId ?? ""}
                 onChange={(e) => setCategoryId(e.target.value || null)}
-                className="w-full rounded-md border px-3 py-2 text-sm"
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
               >
                 <option value="">None</option>
                 {categories.map((c) => (
@@ -155,7 +155,7 @@ export default function AddTransactionForm() {
                 step="0.01"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full rounded-md border px-3 py-2 text-sm"
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 required
               />
             </div>
@@ -167,7 +167,7 @@ export default function AddTransactionForm() {
                 type="date"
                 value={txDate}
                 onChange={(e) => setTxDate(e.target.value)}
-                className="w-full rounded-md border px-3 py-2 text-sm"
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 required
               />
             </div>
@@ -179,7 +179,7 @@ export default function AddTransactionForm() {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Transaction details..."
-                className="w-full rounded-md border px-3 py-2 text-sm resize-none min-h-[80px]"
+                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm resize-none min-h-[80px]"
               />
             </div>
 
@@ -224,7 +224,7 @@ export default function AddTransactionForm() {
                   type="text"
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                   placeholder="Category name"
                 />
               </div>
@@ -233,7 +233,7 @@ export default function AddTransactionForm() {
                 <select
                   value={newCategoryType}
                   onChange={(e) => setNewCategoryType(e.target.value as "INCOME" | "EXPENSE")}
-                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="EXPENSE">Expense</option>
                   <option value="INCOME">Income</option>

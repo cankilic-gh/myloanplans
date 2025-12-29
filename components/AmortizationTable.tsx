@@ -170,7 +170,7 @@ export function AmortizationTable({
         <CardContent>
           <div className="overflow-x-auto">
             <div className="min-w-full inline-block align-middle">
-              <div className="overflow-hidden border rounded-lg">
+              <div className="overflow-hidden border border-slate-200 rounded-lg">
                 <div ref={scrollContainerRef} className="max-h-[500px] overflow-y-auto scroll-smooth">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-slate-50 sticky top-0 z-10">
@@ -270,7 +270,7 @@ export function AmortizationTable({
             </div>
           )}
 
-          <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+          <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-slate-200 border-indigo-200">
             <p className="text-sm text-indigo-900 flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               <span>

@@ -287,7 +287,7 @@ export function AuthModal() {
                   </div>
 
                   {loginError && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="p-3 bg-red-50 border border-slate-200 border-red-200 rounded-lg">
                       <p className="text-sm text-red-600">{loginError}</p>
                     </div>
                   )}
@@ -408,7 +408,7 @@ export function AuthModal() {
                   </div>
 
                     {signupErrors.submit && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="p-3 bg-red-50 border border-slate-200 border-red-200 rounded-lg">
                       <p className="text-sm text-red-600">{signupErrors.submit}</p>
                     </div>
                   )}
