@@ -5,6 +5,7 @@ import { DashboardLayout, LoanPlan } from "@/components/DashboardLayout";
 import { LoanTab } from "@/components/LoanTab";
 import BudgetTab from "@/components/BudgetTab";
 import { saveUserData, loadUserData } from "@/lib/storage";
+import { fetchLoanPlans } from "@/lib/api/loan-plans";
 
 const initialPlans: LoanPlan[] = [];
 
@@ -27,39 +28,63 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // Load user info and saved data from localStorage on mount
+  // Load user info and loan plans from API
   useEffect(() => {
-    try {
-      if (typeof window !== "undefined") {
-        const storedName = sessionStorage.getItem("userName");
-        const storedEmail = sessionStorage.getItem("userEmail");
-        
-        if (storedName) setUserName(storedName);
-        if (storedEmail) {
-          setUserEmail(storedEmail);
+    async function loadData() {
+      try {
+        if (typeof window !== "undefined") {
+          const storedName = sessionStorage.getItem("userName");
+          const storedEmail = sessionStorage.getItem("userEmail");
           
-          // Load saved plans data from localStorage
-          const savedData = loadUserData(storedEmail);
-          if (savedData && savedData.plans.length > 0) {
-            setPlans(savedData.plans);
-            const firstPlanId = savedData.plans[0].id;
-            setActivePlanId(firstPlanId);
+          if (storedName) setUserName(storedName);
+          if (storedEmail) {
+            setUserEmail(storedEmail);
+            
+            // Load loan plans from API
+            try {
+              const apiPlans = await fetchLoanPlans();
+              if (apiPlans && apiPlans.length > 0) {
+                // Convert API plans to dashboard format
+                const formattedPlans: LoanPlan[] = apiPlans.map(plan => ({
+                  id: plan.id,
+                  name: plan.name,
+                  createdAt: typeof plan.createdAt === 'string' 
+                    ? plan.createdAt.split("T")[0] 
+                    : new Date(plan.createdAt).toISOString().split("T")[0],
+                }));
+                setPlans(formattedPlans);
+                setActivePlanId(formattedPlans[0].id);
+              } else {
+                setPlans(initialPlans);
+                setActivePlanId(null);
+              }
+            } catch (apiError) {
+              console.error("Error fetching loan plans from API:", apiError);
+              // Fallback to localStorage if API fails
+              const savedData = loadUserData(storedEmail);
+              if (savedData && savedData.plans.length > 0) {
+                setPlans(savedData.plans);
+                setActivePlanId(savedData.plans[0]?.id || null);
+              } else {
+                setPlans(initialPlans);
+                setActivePlanId(null);
+              }
+            }
           } else {
             setPlans(initialPlans);
-            setActivePlanId(initialPlans[0]?.id || null);
+            setActivePlanId(null);
           }
-        } else {
-          setPlans(initialPlans);
-          setActivePlanId(initialPlans[0]?.id || null);
         }
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        setPlans(initialPlans);
+        setActivePlanId(null);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error loading dashboard data:", error);
-      setPlans(initialPlans);
-      setActivePlanId(initialPlans[0]?.id || null);
-    } finally {
-      setIsLoading(false);
     }
+    
+    loadData();
   }, []);
 
   const handleAddNewPlan = () => {

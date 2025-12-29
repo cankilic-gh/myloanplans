@@ -1,0 +1,310 @@
+{
+  "users": [
+    {
+      "id": "cmjcd8c1b0000qp5226ixxb20",
+      "name": "CAN KILIC",
+      "email": "cankilic.mail@gmail.com",
+      "emailVerified": "2025-12-19T04:25:11.539Z",
+      "password": "22222222",
+      "image": null,
+      "createdAt": "2025-12-19T04:24:52.464Z",
+      "updatedAt": "2025-12-19T04:25:11.539Z",
+      "loanPlans": [
+        {
+          "id": "cmjcf7on50001qpvbu156vq9z",
+          "name": "Test Mortgage",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "principalAmount": 250000,
+          "interestRate": 0.045,
+          "termMonths": 360,
+          "downPayment": 50000,
+          "recurringExtraPayment": 100,
+          "startDate": "2025-12-19T05:20:21.376Z",
+          "createdAt": "2025-12-19T05:20:21.377Z",
+          "updatedAt": "2025-12-19T05:20:21.377Z",
+          "oneTimePayments": "{}"
+        },
+        {
+          "id": "cmjd598qw0001qp3m0zljy7l3",
+          "name": "Test Plan 2",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "principalAmount": 300000,
+          "interestRate": 0.05,
+          "termMonths": 240,
+          "downPayment": null,
+          "recurringExtraPayment": null,
+          "startDate": "2025-12-19T17:29:24.103Z",
+          "createdAt": "2025-12-19T17:29:24.104Z",
+          "updatedAt": "2025-12-19T17:29:24.104Z",
+          "oneTimePayments": "{}"
+        },
+        {
+          "id": "cmjdudr9q0001qp1vdl6rtuuw",
+          "name": "Home Mortgage",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "principalAmount": 500000,
+          "interestRate": 0.065,
+          "termMonths": 360,
+          "downPayment": 150000,
+          "recurringExtraPayment": null,
+          "startDate": "2025-12-20T05:12:45.133Z",
+          "createdAt": "2025-12-20T05:12:45.134Z",
+          "updatedAt": "2025-12-20T05:12:45.134Z",
+          "oneTimePayments": "{}"
+        },
+        {
+          "id": "cmjdukrpt0001l804zbroxsz5",
+          "name": "Home Mortgage",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "principalAmount": 500000,
+          "interestRate": 0.065,
+          "termMonths": 360,
+          "downPayment": 150000,
+          "recurringExtraPayment": null,
+          "startDate": "2025-12-20T05:18:12.305Z",
+          "createdAt": "2025-12-20T05:18:12.306Z",
+          "updatedAt": "2025-12-20T05:18:12.306Z",
+          "oneTimePayments": "{}"
+        },
+        {
+          "id": "cmjdule6j0001l4048uqb8o3k",
+          "name": "Auto Loan",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "principalAmount": 50000,
+          "interestRate": 0.0199,
+          "termMonths": 60,
+          "downPayment": null,
+          "recurringExtraPayment": null,
+          "startDate": "2025-12-20T05:18:41.418Z",
+          "createdAt": "2025-12-20T05:18:41.419Z",
+          "updatedAt": "2025-12-20T05:18:41.419Z",
+          "oneTimePayments": "{}"
+        }
+      ],
+      "budgetAccounts": [],
+      "budgetCategories": [
+        {
+          "id": "cmjq03wec0001qpotz3j3nbnr",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "name": "Salary",
+          "type": "INCOME",
+          "budgetLimit": null,
+          "createdAt": "2025-12-28T17:26:17.029Z"
+        },
+        {
+          "id": "cmjq06f340007qpotnmih1vvg",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "name": "Rent",
+          "type": "EXPENSE",
+          "budgetLimit": null,
+          "createdAt": "2025-12-28T17:28:14.560Z"
+        }
+      ],
+      "transactions": [],
+      "recurringExpenses": [
+        {
+          "id": "cmjq0564e0003qpotihsko2ig",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "name": "Salary",
+          "amount": 7000,
+          "type": "income",
+          "frequency": "monthly",
+          "description": "ILG",
+          "categoryId": "cmjq03wec0001qpotz3j3nbnr",
+          "accountId": null,
+          "nextDueDate": "2025-12-26T00:00:00.000Z",
+          "createdAt": "2025-12-28T17:27:16.286Z"
+        },
+        {
+          "id": "cmjq075420009qpotbv6awsdg",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "name": "Rent",
+          "amount": 2500,
+          "type": "expense",
+          "frequency": "monthly",
+          "description": "50 Paramount",
+          "categoryId": null,
+          "accountId": null,
+          "nextDueDate": "2025-12-01T00:00:00.000Z",
+          "createdAt": "2025-12-28T17:28:48.290Z"
+        },
+        {
+          "id": "cmjq065co0005qpothdini8b9",
+          "userId": "cmjcd8c1b0000qp5226ixxb20",
+          "name": "Salary",
+          "amount": 800,
+          "type": "income",
+          "frequency": "weekly_2",
+          "description": "TARGET",
+          "categoryId": "cmjq03wec0001qpotz3j3nbnr",
+          "accountId": null,
+          "nextDueDate": "2025-12-25T00:00:00.000Z",
+          "createdAt": "2025-12-28T17:28:01.944Z"
+        }
+      ]
+    },
+    {
+      "id": "cmjddocos0000ic04em2cdpfk",
+      "name": "CAN KILIC",
+      "email": "cankilic.mail+1@gmail.com",
+      "emailVerified": "2025-12-19T21:25:21.038Z",
+      "password": "22222222",
+      "image": null,
+      "createdAt": "2025-12-19T21:25:05.980Z",
+      "updatedAt": "2025-12-19T21:25:21.039Z",
+      "loanPlans": [],
+      "budgetAccounts": [],
+      "budgetCategories": [],
+      "transactions": [],
+      "recurringExpenses": []
+    },
+    {
+      "id": "cmjdge9nz0000ju04u4wcym1i",
+      "name": "mustafa",
+      "email": "mr.sarac@gmail.com",
+      "emailVerified": "2025-12-19T22:41:45.448Z",
+      "password": "01020304",
+      "image": null,
+      "createdAt": "2025-12-19T22:41:14.350Z",
+      "updatedAt": "2025-12-19T22:41:45.449Z",
+      "loanPlans": [],
+      "budgetAccounts": [],
+      "budgetCategories": [],
+      "transactions": [],
+      "recurringExpenses": []
+    }
+  ],
+  "loanPlans": [
+    {
+      "id": "cmjcf7on50001qpvbu156vq9z",
+      "name": "Test Mortgage",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "principalAmount": 250000,
+      "interestRate": 0.045,
+      "termMonths": 360,
+      "downPayment": 50000,
+      "recurringExtraPayment": 100,
+      "startDate": "2025-12-19T05:20:21.376Z",
+      "createdAt": "2025-12-19T05:20:21.377Z",
+      "updatedAt": "2025-12-19T05:20:21.377Z",
+      "oneTimePayments": "{}"
+    },
+    {
+      "id": "cmjd598qw0001qp3m0zljy7l3",
+      "name": "Test Plan 2",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "principalAmount": 300000,
+      "interestRate": 0.05,
+      "termMonths": 240,
+      "downPayment": null,
+      "recurringExtraPayment": null,
+      "startDate": "2025-12-19T17:29:24.103Z",
+      "createdAt": "2025-12-19T17:29:24.104Z",
+      "updatedAt": "2025-12-19T17:29:24.104Z",
+      "oneTimePayments": "{}"
+    },
+    {
+      "id": "cmjdudr9q0001qp1vdl6rtuuw",
+      "name": "Home Mortgage",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "principalAmount": 500000,
+      "interestRate": 0.065,
+      "termMonths": 360,
+      "downPayment": 150000,
+      "recurringExtraPayment": null,
+      "startDate": "2025-12-20T05:12:45.133Z",
+      "createdAt": "2025-12-20T05:12:45.134Z",
+      "updatedAt": "2025-12-20T05:12:45.134Z",
+      "oneTimePayments": "{}"
+    },
+    {
+      "id": "cmjdukrpt0001l804zbroxsz5",
+      "name": "Home Mortgage",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "principalAmount": 500000,
+      "interestRate": 0.065,
+      "termMonths": 360,
+      "downPayment": 150000,
+      "recurringExtraPayment": null,
+      "startDate": "2025-12-20T05:18:12.305Z",
+      "createdAt": "2025-12-20T05:18:12.306Z",
+      "updatedAt": "2025-12-20T05:18:12.306Z",
+      "oneTimePayments": "{}"
+    },
+    {
+      "id": "cmjdule6j0001l4048uqb8o3k",
+      "name": "Auto Loan",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "principalAmount": 50000,
+      "interestRate": 0.0199,
+      "termMonths": 60,
+      "downPayment": null,
+      "recurringExtraPayment": null,
+      "startDate": "2025-12-20T05:18:41.418Z",
+      "createdAt": "2025-12-20T05:18:41.419Z",
+      "updatedAt": "2025-12-20T05:18:41.419Z",
+      "oneTimePayments": "{}"
+    }
+  ],
+  "budgetAccounts": [],
+  "budgetCategories": [
+    {
+      "id": "cmjq03wec0001qpotz3j3nbnr",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "name": "Salary",
+      "type": "INCOME",
+      "budgetLimit": null,
+      "createdAt": "2025-12-28T17:26:17.029Z"
+    },
+    {
+      "id": "cmjq06f340007qpotnmih1vvg",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "name": "Rent",
+      "type": "EXPENSE",
+      "budgetLimit": null,
+      "createdAt": "2025-12-28T17:28:14.560Z"
+    }
+  ],
+  "transactions": [],
+  "recurringExpenses": [
+    {
+      "id": "cmjq0564e0003qpotihsko2ig",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "name": "Salary",
+      "amount": 7000,
+      "type": "income",
+      "frequency": "monthly",
+      "description": "ILG",
+      "categoryId": "cmjq03wec0001qpotz3j3nbnr",
+      "accountId": null,
+      "nextDueDate": "2025-12-26T00:00:00.000Z",
+      "createdAt": "2025-12-28T17:27:16.286Z"
+    },
+    {
+      "id": "cmjq075420009qpotbv6awsdg",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "name": "Rent",
+      "amount": 2500,
+      "type": "expense",
+      "frequency": "monthly",
+      "description": "50 Paramount",
+      "categoryId": null,
+      "accountId": null,
+      "nextDueDate": "2025-12-01T00:00:00.000Z",
+      "createdAt": "2025-12-28T17:28:48.290Z"
+    },
+    {
+      "id": "cmjq065co0005qpothdini8b9",
+      "userId": "cmjcd8c1b0000qp5226ixxb20",
+      "name": "Salary",
+      "amount": 800,
+      "type": "income",
+      "frequency": "weekly_2",
+      "description": "TARGET",
+      "categoryId": "cmjq03wec0001qpotz3j3nbnr",
+      "accountId": null,
+      "nextDueDate": "2025-12-25T00:00:00.000Z",
+      "createdAt": "2025-12-28T17:28:01.944Z"
+    }
+  ]
+}
