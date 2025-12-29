@@ -110,6 +110,46 @@ export default function DashboardPage() {
     setActiveSection("loan"); // Switch to loan section when selecting a plan
   };
 
+  const handlePlansChange = (updatedPlans: LoanPlan[]) => {
+    // Update plans list (called immediately for UI responsiveness)
+    setPlans(updatedPlans);
+    if (updatedPlans.length > 0) {
+      setActivePlanId(updatedPlans[0].id);
+    } else {
+      setActivePlanId(null);
+    }
+  };
+
+  // Listen for loan plan deletion to reload from API
+  useEffect(() => {
+    const handleLoanPlanDeleted = async () => {
+      try {
+        if (userEmail) {
+          const apiPlans = await fetchLoanPlans();
+          if (apiPlans && apiPlans.length > 0) {
+            const formattedPlans: LoanPlan[] = apiPlans.map(plan => ({
+              id: plan.id,
+              name: plan.name,
+              createdAt: typeof plan.createdAt === 'string' 
+                ? plan.createdAt.split("T")[0] 
+                : new Date(plan.createdAt).toISOString().split("T")[0],
+            }));
+            setPlans(formattedPlans);
+            setActivePlanId(formattedPlans.length > 0 ? formattedPlans[0].id : null);
+          } else {
+            setPlans(initialPlans);
+            setActivePlanId(null);
+          }
+        }
+      } catch (error) {
+        console.error("Error reloading plans:", error);
+      }
+    };
+
+    window.addEventListener("loan-plan-deleted", handleLoanPlanDeleted);
+    return () => window.removeEventListener("loan-plan-deleted", handleLoanPlanDeleted);
+  }, [userEmail]);
+
   const handleLogout = () => {
     if (userEmail) {
       const savedData = loadUserData(userEmail);
@@ -160,7 +200,7 @@ export default function DashboardPage() {
             activePlanId={activePlanId}
             onPlanSelect={handlePlanSelect}
             onAddNewPlan={handleAddNewPlan}
-            onPlansChange={setPlans}
+            onPlansChange={handlePlansChange}
             userEmail={userEmail}
           />
         ) : (

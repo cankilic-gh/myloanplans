@@ -321,20 +321,41 @@ export function LoanTab({
     }
     
     setIsDeleting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    const remainingPlans = plans.filter(p => p.id !== activePlanId);
-    onPlansChange(remainingPlans);
-    
-    const newSavedPlansData = new Map(savedPlansData);
-    newSavedPlansData.delete(activePlanId);
-    setSavedPlansData(newSavedPlansData);
-    
-    if (userEmail) {
-      saveUserData(userEmail, remainingPlans, newSavedPlansData);
+    try {
+      // Delete from API/database
+      const { deleteLoanPlan } = await import("@/lib/api/loan-plans");
+      await deleteLoanPlan(activePlanId);
+      
+      // Update local state
+      const remainingPlans = plans.filter(p => p.id !== activePlanId);
+      
+      // Clear saved data for this plan
+      const newSavedPlansData = new Map(savedPlansData);
+      newSavedPlansData.delete(activePlanId);
+      setSavedPlansData(newSavedPlansData);
+      
+      // Update localStorage
+      if (userEmail) {
+        saveUserData(userEmail, remainingPlans, newSavedPlansData);
+      }
+      
+      // Update parent component's plans list
+      onPlansChange(remainingPlans);
+      
+      // If we deleted the active plan, select the first remaining plan
+      if (remainingPlans.length > 0) {
+        onPlanSelect(remainingPlans[0].id);
+      }
+      
+      // Dispatch event to reload plans from API in dashboard
+      window.dispatchEvent(new CustomEvent("loan-plan-deleted"));
+    } catch (error) {
+      console.error("Error deleting loan plan:", error);
+      alert(`Failed to delete loan plan: ${error instanceof Error ? error.message : "Unknown error"}`);
+    } finally {
+      setIsDeleting(false);
     }
-    
-    setIsDeleting(false);
   };
 
   return (
