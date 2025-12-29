@@ -309,12 +309,11 @@ export default function Chart() {
       <div className="text-sm font-semibold text-slate-700 mb-4">Income vs Expenses (Last 12 Months)</div>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
           <XAxis 
             dataKey="monthLabel" 
             tickFormatter={formatMonth}
             stroke="#64748b"
-            className="dark:stroke-slate-400"
             style={{ fontSize: "12px" }}
             angle={-45}
             textAnchor="end"
@@ -323,7 +322,6 @@ export default function Chart() {
           <YAxis 
             tickFormatter={(value) => formatCurrency(value)}
             stroke="#64748b"
-            className="dark:stroke-slate-400"
             style={{ fontSize: "12px" }}
           />
           <Tooltip content={<CustomTooltip />} />
