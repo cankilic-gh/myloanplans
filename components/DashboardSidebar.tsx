@@ -72,7 +72,7 @@ export function DashboardSidebar({
   const SidebarContent = () => (
     <aside className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-hidden">
       {/* User Profile Area - Top */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
+      <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-900">
         <div className="flex items-center gap-3 mb-2">
           <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-lg shadow-sm">
             {userName.charAt(0).toUpperCase()}
