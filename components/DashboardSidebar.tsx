@@ -205,7 +205,7 @@ export function DashboardSidebar({
       {/* Mobile Hamburger Button */}
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-lg border border-slate-200 border-slate-200"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-lg border border-slate-200"
         aria-label="Open menu"
       >
         <Menu className="h-6 w-6 text-slate-700" />
@@ -236,7 +236,7 @@ export function DashboardSidebar({
             <SidebarContent />
             <button
               onClick={() => setIsMobileOpen(false)}
-              className="absolute top-4 right-4 p-2 rounded-lg bg-white shadow-lg border border-slate-200 border-slate-200"
+              className="absolute top-4 right-4 p-2 rounded-lg bg-white shadow-lg border border-slate-200"
               aria-label="Close menu"
             >
               <X className="h-5 w-5 text-slate-700" />

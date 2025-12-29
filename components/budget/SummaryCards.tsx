@@ -48,7 +48,7 @@ export default function SummaryCards() {
     return (
       <div className="grid grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-lg border border-slate-200 border-slate-200 p-4 animate-pulse">
+          <div key={i} className="bg-white rounded-lg border border-slate-200 p-4 animate-pulse">
             <div className="h-4 bg-slate-200 rounded w-24 mb-2"></div>
             <div className="h-8 bg-slate-200 rounded w-32"></div>
           </div>
@@ -60,7 +60,7 @@ export default function SummaryCards() {
   return (
     <div className="grid grid-cols-3 gap-4">
       {/* Total Current */}
-      <div className="bg-white rounded-lg border border-slate-200 border-slate-200 p-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
         <div className="text-sm text-slate-500 mb-1">Total Current</div>
         <div className={`text-2xl font-semibold ${totalCurrent >= 0 ? "text-emerald-600" : "text-red-600"}`}>
           {formatCurrency(totalCurrent)}
@@ -68,7 +68,7 @@ export default function SummaryCards() {
       </div>
 
       {/* Total Income */}
-      <div className="bg-white rounded-lg border border-slate-200 border-slate-200 p-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
         <div className="text-sm text-slate-500 mb-1">Total Income</div>
         <div className="text-2xl font-semibold text-emerald-600">
           {formatCurrency(totalIncome)}
@@ -76,7 +76,7 @@ export default function SummaryCards() {
       </div>
 
       {/* Total Expense */}
-      <div className="bg-white rounded-lg border border-slate-200 border-slate-200 p-4">
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
         <div className="text-sm text-slate-500 mb-1">Total Expense</div>
         <div className="text-2xl font-semibold text-red-600">
           {formatCurrency(totalExpense)}

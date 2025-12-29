@@ -46,7 +46,7 @@ export function TrustSignals() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="flex flex-col items-center text-center p-6 bg-white rounded-xl border border-slate-200 border-slate-200 hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+                className="flex flex-col items-center text-center p-6 bg-white rounded-xl border border-slate-200 hover:border-primary/50 hover:shadow-lg transition-all duration-300"
               >
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-primary to-emerald-500 text-white mb-4 shadow-lg">
                   <Icon className="h-7 w-7" />

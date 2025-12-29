@@ -130,7 +130,7 @@ export function SummaryCard({
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200 border-slate-200"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200"
                 >
                   <div className={`p-2 rounded-lg bg-white ${item.color}`}>
                     <Icon className="h-5 w-5" />
