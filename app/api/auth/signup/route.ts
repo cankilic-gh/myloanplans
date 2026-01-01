@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendVerificationEmail } from "@/lib/email";
 import { verificationCodes } from "@/lib/verification-codes";
+import { createSupabaseAdmin } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
-import { users } from "@/lib/users-storage";
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,43 +34,86 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Try to use database if available, fallback to in-memory
+    const supabase = createSupabaseAdmin();
+
+    // Check if user already exists in Supabase Auth
+    console.log("[SIGNUP] 🔍 Checking if user exists in Supabase Auth...");
+    const { data: existingUsers, error: listError } = await supabase.auth.admin.listUsers();
+    
+    if (!listError && existingUsers?.users) {
+      const userExists = existingUsers.users.some(u => u.email === email);
+      if (userExists) {
+        console.log("[SIGNUP] ❌ User already exists in Supabase Auth:", email);
+        return NextResponse.json(
+          { error: "An account with this email already exists. Please sign in instead." },
+          { status: 409 }
+        );
+      }
+    }
+
+    // Create user in Supabase Auth
+    console.log("[SIGNUP] 🔄 Creating user in Supabase Auth...");
+    const { data: authData, error: createError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: false, // Require email verification
+      user_metadata: {
+        name,
+      },
+    });
+
+    if (createError) {
+      console.error("[SIGNUP] ❌ Error creating user in Supabase Auth:", createError);
+      
+      if (createError.message.includes("already registered")) {
+        return NextResponse.json(
+          { error: "An account with this email already exists. Please sign in instead." },
+          { status: 409 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: "Failed to create account. Please try again." },
+        { status: 500 }
+      );
+    }
+
+    if (!authData.user) {
+      console.error("[SIGNUP] ❌ No user returned from Supabase Auth");
+      return NextResponse.json(
+        { error: "Failed to create account. Please try again." },
+        { status: 500 }
+      );
+    }
+
+    console.log(`[SIGNUP] ✅ User created in Supabase Auth: ${authData.user.id}`);
+
+    // Create user in Prisma database (for business data)
     if (prisma && typeof prisma.user !== 'undefined') {
       try {
-        // Check if user already exists in database
-        const existingUser = await prisma.user.findUnique({
+        // Check if user already exists in Prisma (shouldn't happen, but check anyway)
+        const existingDbUser = await prisma.user.findUnique({
           where: { email },
         });
 
-        if (existingUser) {
-          console.log("[SIGNUP] ❌ User already exists:", email);
-          return NextResponse.json(
-            { error: "An account with this email already exists. Please sign in instead." },
-            { status: 409 }
-          );
+        if (!existingDbUser) {
+          // Create user in Prisma database
+          const dbUser = await prisma.user.create({
+            data: {
+              email,
+              name,
+              // Don't store password in Prisma anymore - it's in Supabase Auth
+              emailVerified: authData.user.email_confirmed_at ? new Date() : null,
+            },
+          });
+          console.log(`[SIGNUP] ✅ User created in Prisma database: ${dbUser.id}`);
+        } else {
+          console.log(`[SIGNUP] ⚠️ User already exists in Prisma database, skipping creation`);
         }
-
-        // Create NEW user in database (no upsert - prevents data override)
-        // In production, use bcrypt to hash password
-        const user = await prisma.user.create({
-          data: {
-            name,
-            email,
-            password, // TODO: Hash with bcrypt in production
-          },
-        });
-
-        console.log(`[SIGNUP] ✅ New user created in database: ${user.id}`);
       } catch (dbError) {
-        console.error("[SIGNUP] Database error, falling back to in-memory:", dbError);
-        // Fallback to in-memory if database fails
-        users.set(email, { name, email, password });
-        console.log(`[SIGNUP] User stored in memory (fallback)`);
+        console.error("[SIGNUP] ⚠️ Error creating user in Prisma database:", dbError);
+        // Don't fail the signup if Prisma fails - user is already in Supabase Auth
       }
-    } else {
-      // No database connection - use in-memory storage
-      console.log("[SIGNUP] No database connection, using in-memory storage");
-      users.set(email, { name, email, password });
     }
 
     // Generate 6-digit verification code
@@ -154,6 +197,7 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 
 
 
