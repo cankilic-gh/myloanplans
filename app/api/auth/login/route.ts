@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, isPrismaReady } from "@/lib/prisma";
-import { users } from "@/lib/users-storage";
+import { createSupabaseAdmin } from "@/lib/supabase";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,87 +16,72 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let user: { name: string | null; email: string; password?: string | null } | null = null;
+    const supabase = createSupabaseAdmin();
 
-    // Try database first
-    if (prisma && isPrismaReady()) {
-      try {
-        console.log("[LOGIN] 🔍 Querying database...");
-        
-        // Explicit connection to prevent cold start issues
-        await prisma.$connect();
-        
-        user = await prisma.user.findUnique({
-          where: { email },
-          select: { name: true, email: true, password: true },
-        });
-        
-        console.log("[LOGIN] ✅ Database query successful. User found:", !!user);
-      } catch (dbError: any) {
-        console.error("[LOGIN] ❌ DATABASE ERROR:", {
-          message: dbError.message,
-          code: dbError.code,
-          cause: dbError.cause,
-        });
-        
-        // Fallback to in-memory on DB error
-        console.warn("[LOGIN] ⚠️ Falling back to in-memory storage");
-        const memUser = users.get(email);
-        if (memUser) {
-          user = { name: memUser.name, email: memUser.email, password: memUser.password };
-          console.log("[LOGIN] ✅ User found in memory (fallback)");
-        }
+    // Try Supabase Auth first
+    console.log("[LOGIN] 🔍 Attempting Supabase Auth login...");
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError) {
+      console.log("[LOGIN] ❌ Supabase Auth error:", authError.message);
+      
+      // Check if it's a user not found error
+      if (authError.message.includes("Invalid login credentials") || 
+          authError.message.includes("Email not confirmed") ||
+          authError.message.includes("User not found")) {
+        return NextResponse.json(
+          { error: "No account found with this email address" },
+          { status: 404 }
+        );
       }
-    } else {
-      // No Prisma - use in-memory storage
-      console.warn("[LOGIN] ⚠️ Prisma not available, using in-memory storage");
-      const memUser = users.get(email);
-      if (memUser) {
-        user = { name: memUser.name, email: memUser.email, password: memUser.password };
-      }
-      console.log("[LOGIN] User found in memory:", !!user);
-      console.log("[LOGIN] Total users in memory:", users.size);
-    }
 
-    // GRANULAR ERROR HANDLING (as requested by user)
-    
-    // Scenario A: User not found
-    if (!user) {
-      console.log("[LOGIN] ❌ User not found");
-      return NextResponse.json(
-        { error: "No account found with this email address" },
-        { status: 404 }
-      );
-    }
-
-    // Scenario A.2: No password set (edge case)
-    if (!user.password) {
-      console.log("[LOGIN] ❌ No password set for user");
-      return NextResponse.json(
-        { error: "No account found with this email address" },
-        { status: 404 }
-      );
-    }
-
-    // Scenario B: Password mismatch
-    // In production, use bcrypt.compare() for hashed passwords
-    if (user.password !== password) {
-      console.log("[LOGIN] ❌ Password mismatch");
+      // For other errors, return generic error
       return NextResponse.json(
         { error: "Incorrect password" },
         { status: 401 }
       );
     }
 
-    console.log("[LOGIN] ✅ Login successful for:", email);
+    if (!authData.user) {
+      console.log("[LOGIN] ❌ No user returned from Supabase Auth");
+      return NextResponse.json(
+        { error: "No account found with this email address" },
+        { status: 404 }
+      );
+    }
+
+    console.log("[LOGIN] ✅ Supabase Auth login successful");
+
+    // Get user metadata from Prisma database (for name and other data)
+    let userName: string | null = null;
+    if (prisma) {
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { email },
+          select: { name: true },
+        });
+        userName = dbUser?.name || null;
+      } catch (dbError) {
+        console.warn("[LOGIN] ⚠️ Could not fetch user name from database:", dbError);
+        // Use metadata from Supabase if available
+        userName = authData.user.user_metadata?.name || null;
+      }
+    } else {
+      // Use metadata from Supabase if Prisma is not available
+      userName = authData.user.user_metadata?.name || null;
+    }
 
     // Login successful
     return NextResponse.json({
       success: true,
       message: "Login successful",
       user: {
-        email: user.email,
-        name: user.name,
+        email: authData.user.email!,
+        name: userName,
+        id: authData.user.id,
       },
     });
   } catch (error) {
@@ -107,6 +92,7 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 
 
 
