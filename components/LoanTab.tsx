@@ -359,15 +359,19 @@ export function LoanTab({
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 py-8 px-4 sm:px-6 lg:px-8 relative">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(37,99,235,0.05),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(16,185,129,0.05),transparent_50%)]" />
+      
       {plans.length === 0 ? (
         <EmptyLoanState onCreateFirst={onAddNewPlan} />
       ) : (
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto space-y-8 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2"
           >
             <div className="text-center sm:text-left space-y-2 flex-1">
@@ -391,27 +395,54 @@ export function LoanTab({
             </div>
             
             {activePlanId && (
-              <div className="flex items-center gap-3 justify-center sm:justify-end">
-                <Button
-                  onClick={handleSave}
-                  disabled={isSaving || !inputs}
-                  className="h-11 px-6 bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200"
-                  aria-label="Save loan plan"
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="flex items-center gap-3 justify-center sm:justify-end"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Save className="mr-2 h-4 w-4" />
-                  {isSaving ? "Saving..." : "Save"}
-                </Button>
-                <Button
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  variant="destructive"
-                  className="h-11 px-6 bg-red-600 hover:bg-red-700 text-white font-semibold shadow-lg shadow-red-500/20 hover:shadow-xl transition-all duration-200"
-                  aria-label="Delete loan plan"
+                  <Button
+                    onClick={handleSave}
+                    disabled={isSaving || !inputs}
+                    className="relative h-11 px-6 bg-gradient-to-r from-primary via-blue-600 to-primary text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all overflow-hidden group"
+                    aria-label="Save loan plan"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      initial={false}
+                    />
+                    <span className="relative z-10 flex items-center">
+                      <Save className="mr-2 h-4 w-4" />
+                      {isSaving ? "Saving..." : "Save"}
+                    </span>
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.6 }}
+                    />
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </Button>
-              </div>
+                  <Button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    variant="destructive"
+                    className="h-11 px-6 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold shadow-lg shadow-red-500/30 hover:shadow-xl transition-all duration-200"
+                    aria-label="Delete loan plan"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </Button>
+                </motion.div>
+              </motion.div>
             )}
           </motion.div>
 
@@ -428,9 +459,9 @@ export function LoanTab({
 
           {result && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-6"
             >
               <SummaryCard 
