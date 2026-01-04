@@ -407,15 +407,17 @@ export function Hero() {
               {/* Enhanced Floating Budget Surplus Card - Glassmorphism */}
               <motion.div
                 initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 1.7, duration: 0.6, type: "spring" }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                animate={{
+                animate={{ 
+                  opacity: 1, 
                   y: [0, -10, 0],
+                  scale: 1 
                 }}
-                transition={{
-                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                transition={{ 
+                  opacity: { delay: 1.7, duration: 0.6, type: "spring" },
+                  scale: { delay: 1.7, duration: 0.6, type: "spring" },
+                  y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.7 }
                 }}
+                whileHover={{ scale: 1.05, y: -5 }}
                 className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/80 p-3 z-20 cursor-pointer"
                 style={{
                   boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1), 0 0 20px rgba(16, 185, 129, 0.2)",
