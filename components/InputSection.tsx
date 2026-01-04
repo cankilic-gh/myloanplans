@@ -98,18 +98,23 @@ export function InputSection({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <Card className="shadow-xl border-slate-200/50 bg-white/95 backdrop-blur-sm relative overflow-hidden">
+        {/* Decorative gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5 pointer-events-none" />
+        
+        <CardHeader className="relative z-10">
+          <div className="inline-flex items-center gap-2">
             <Calculator className="h-5 w-5 text-primary" />
-            Mortgage Calculator
-          </CardTitle>
+            <CardTitle className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              Mortgage Calculator
+            </CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="principal">Principal Amount ($)</Label>
@@ -187,14 +192,31 @@ export function InputSection({
             </div>
           </div>
 
-          <Button
-            onClick={handleCalculate}
-            disabled={!isFormValid() || isCalculating}
-            className="w-full mt-6 h-12 text-base font-semibold"
-            size="lg"
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            {isCalculating ? "Calculating..." : "Calculate Mortgage"}
-          </Button>
+            <Button
+              onClick={handleCalculate}
+              disabled={!isFormValid() || isCalculating}
+              className="relative w-full mt-6 h-12 text-base font-semibold bg-gradient-to-r from-primary via-blue-600 to-primary text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all overflow-hidden group"
+              size="lg"
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                initial={false}
+              />
+              <span className="relative z-10">
+                {isCalculating ? "Calculating..." : "Calculate Mortgage"}
+              </span>
+              <motion.div
+                className="absolute inset-0 bg-white/20"
+                initial={{ x: "-100%" }}
+                whileHover={{ x: "100%" }}
+                transition={{ duration: 0.6 }}
+              />
+            </Button>
+          </motion.div>
         </CardContent>
       </Card>
     </motion.div>

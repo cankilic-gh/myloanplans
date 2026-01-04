@@ -38,28 +38,32 @@ export function DashboardLayout({
   return (
     <>
       <SessionWarning show={showWarning} />
-      <div className="flex h-screen bg-slate-50 overflow-hidden">
-      {/* Left Panel - Sidebar */}
-      <DashboardSidebar
-        plans={plans}
-        activePlanId={activePlanId}
-        onPlanSelect={onPlanSelect}
-        onAddNewPlan={onAddNewPlan}
-        activeSection={activeSection}
-        onSectionChange={onSectionChange}
-        userName={userName}
-        userEmail={userEmail}
-        onLogout={onLogout}
-      />
+      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 overflow-hidden relative">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(37,99,235,0.05),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.05),transparent_50%)]" />
+        
+        {/* Left Panel - Sidebar */}
+        <DashboardSidebar
+          plans={plans}
+          activePlanId={activePlanId}
+          onPlanSelect={onPlanSelect}
+          onAddNewPlan={onAddNewPlan}
+          activeSection={activeSection}
+          onSectionChange={onSectionChange}
+          userName={userName}
+          userEmail={userEmail}
+          onLogout={onLogout}
+        />
 
-      {/* Right Panel - Main Workspace */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Main Content Area */}
-        <section className="flex-1 overflow-y-auto min-h-0">
-          {children}
-        </section>
-      </main>
-    </div>
+        {/* Right Panel - Main Workspace */}
+        <main className="flex-1 flex flex-col overflow-hidden relative z-10">
+          {/* Main Content Area */}
+          <section className="flex-1 overflow-y-auto min-h-0">
+            {children}
+          </section>
+        </main>
+      </div>
     </>
   );
 }

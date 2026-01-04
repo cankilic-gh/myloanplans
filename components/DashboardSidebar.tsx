@@ -68,19 +68,26 @@ export function DashboardSidebar({
   };
 
   const SidebarContent = () => (
-    <aside className="flex flex-col h-full bg-white border-r border-slate-200 overflow-hidden">
+    <aside className="flex flex-col h-full bg-white/95 backdrop-blur-sm border-r border-slate-200/50 overflow-hidden shadow-xl">
       {/* User Profile Area - Top */}
-      <div className="p-6 border-b border-slate-200 bg-gradient-to-br from-slate-50 to-white">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-lg shadow-sm">
-            {userName.charAt(0).toUpperCase()}
+      <div className="p-6 border-b border-slate-200/50 bg-gradient-to-br from-slate-50 via-blue-50/30 to-white relative overflow-hidden">
+        {/* Decorative gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5" />
+        
+        <div className="flex items-center gap-3 mb-2 relative z-10">
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary via-blue-600 to-primary flex items-center justify-center text-white font-semibold text-lg shadow-lg relative overflow-hidden">
+            <span className="relative z-10">{userName.charAt(0).toUpperCase()}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-slate-900 truncate">{userName}</p>
-            <p className="text-sm text-slate-500 truncate">{userEmail}</p>
+            <p className="font-semibold text-slate-900 truncate">
+              {userName}
+            </p>
+            <p className="text-sm text-slate-500 truncate">
+              {userEmail}
+            </p>
           </div>
         </div>
-        <p className="text-sm text-slate-600 mt-2">
+        <p className="text-sm text-slate-600 mt-2 relative z-10">
           Welcome back! 👋
         </p>
       </div>
@@ -108,8 +115,8 @@ export function DashboardSidebar({
                     }}
                     type="button"
                     className={cn(
-                      "relative w-full text-left py-2.5 transition-colors duration-150 cursor-pointer",
-                      "hover:bg-slate-100 rounded-lg",
+                      "relative w-full text-left py-2.5 transition-colors duration-150 cursor-pointer rounded-lg",
+                      "hover:bg-slate-50",
                       "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                       activePlanId === plan.id && activeSection === "loan"
                         ? "bg-blue-50 text-slate-900 font-medium pl-4 pr-3"
@@ -121,7 +128,7 @@ export function DashboardSidebar({
                     aria-label={`Select plan: ${plan.name}`}
                     aria-current={activePlanId === plan.id && activeSection === "loan" ? "page" : undefined}
                   >
-                    {/* Active indicator - absolute positioned to prevent layout shift */}
+                    {/* Active indicator */}
                     {activePlanId === plan.id && activeSection === "loan" && (
                       <span className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-sm" />
                     )}
@@ -151,8 +158,8 @@ export function DashboardSidebar({
                 onClick={() => onSectionChange("budget")}
                 type="button"
                 className={cn(
-                  "relative w-full text-left py-2.5 transition-colors duration-150 cursor-pointer",
-                  "hover:bg-slate-100 rounded-lg",
+                  "relative w-full text-left py-2.5 transition-colors duration-150 cursor-pointer rounded-lg",
+                  "hover:bg-slate-50",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   activeSection === "budget"
                     ? "bg-blue-50 text-slate-900 font-medium pl-4 pr-3"
@@ -178,10 +185,10 @@ export function DashboardSidebar({
       </div>
 
       {/* Add New Plan Button - Bottom */}
-      <div className="p-4 border-t border-slate-200 bg-slate-50/50 space-y-2 flex-shrink-0">
+      <div className="p-4 border-t border-slate-200/50 bg-gradient-to-t from-slate-50/80 to-white/50 backdrop-blur-sm space-y-2 flex-shrink-0">
         <Button
           onClick={onAddNewPlan}
-          className="w-full h-11 bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+          className="w-full h-11 bg-gradient-to-r from-primary via-blue-600 to-primary text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
           aria-label="Add new loan plan"
         >
           <Plus className="h-5 w-5 mr-2" />
@@ -190,7 +197,7 @@ export function DashboardSidebar({
         <Button
           onClick={handleLogout}
           variant="ghost"
-          className="w-full h-10 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+          className="w-full h-10 text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all"
           aria-label="Logout"
         >
           <LogOut className="h-4 w-4 mr-2" />

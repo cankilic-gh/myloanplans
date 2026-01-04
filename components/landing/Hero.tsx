@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/stores/useUIStore";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Zap, Sparkles } from "lucide-react";
 
 export function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -15,13 +15,19 @@ export function Hero() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7.5, -7.5]), {
-    stiffness: 100,
-    damping: 20,
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), {
+    stiffness: 150,
+    damping: 25,
   });
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-7.5, 7.5]), {
-    stiffness: 100,
-    damping: 20,
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), {
+    stiffness: 150,
+    damping: 25,
+  });
+
+  // Floating animation for background elements
+  const floatingY = useMotionValue(0);
+  useAnimationFrame((t) => {
+    floatingY.set(Math.sin(t / 2000) * 20);
   });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -44,10 +50,62 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-32 lg:pt-40 pb-20 px-4 sm:px-6 lg:px-8">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(37,99,235,0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(16,185,129,0.1),transparent_50%)]" />
+      {/* Animated Background Gradient */}
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50"
+        animate={{
+          background: [
+            "linear-gradient(to bottom right, rgb(248 250 252), rgb(239 246 255 / 0.3), rgb(238 242 255 / 0.5))",
+            "linear-gradient(to bottom right, rgb(239 246 255 / 0.3), rgb(248 250 252), rgb(238 242 255 / 0.5))",
+            "linear-gradient(to bottom right, rgb(248 250 252), rgb(239 246 255 / 0.3), rgb(238 242 255 / 0.5))",
+          ],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      
+      {/* Animated Radial Gradients */}
+      <motion.div 
+        className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(37,99,235,0.15),transparent_50%)]"
+        style={{ y: floatingY }}
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.15, 0.25, 0.15],
+        }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(16,185,129,0.15),transparent_50%)]"
+        style={{ y: useTransform(floatingY, (v) => -v) }}
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.15, 0.25, 0.15],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      
+      {/* Floating Particles Effect */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-primary/20 rounded-full blur-sm"
+          style={{
+            left: `${20 + i * 15}%`,
+            top: `${30 + (i % 3) * 20}%`,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            x: [0, Math.sin(i) * 20, 0],
+            opacity: [0.2, 0.5, 0.2],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: 4 + i * 0.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.3,
+          }}
+        />
+      ))}
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
@@ -58,28 +116,48 @@ export function Hero() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center lg:text-left space-y-8 relative z-10"
           >
-            {/* Badge */}
+            {/* Animated Badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-slate-200 border-emerald-200 rounded-full text-emerald-700 text-sm font-medium"
+              initial={{ opacity: 0, scale: 0.8, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5, type: "spring", stiffness: 200 }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-blue-50 border border-slate-200 border-emerald-200/50 rounded-full text-emerald-700 text-sm font-medium shadow-sm hover:shadow-md transition-all cursor-default"
             >
-              <TrendingUp className="h-4 w-4" />
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <TrendingUp className="h-4 w-4" />
+              </motion.div>
               <span>Trusted by thousands of users</span>
+              <motion.div
+                className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full"
+                animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
             </motion.div>
 
-            {/* Headline */}
+            {/* Animated Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
+              transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold text-slate-900 leading-[1.2]"
             >
               Turn Financial{" "}
-              <span className="bg-gradient-to-r from-primary via-blue-600 to-emerald-600 bg-clip-text text-transparent">
+              <motion.span 
+                className="bg-gradient-to-r from-primary via-blue-600 to-emerald-600 bg-clip-text text-transparent inline-block"
+                animate={{
+                  backgroundPosition: ["0%", "100%", "0%"],
+                }}
+                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+                style={{
+                  backgroundSize: "200% 200%",
+                }}
+              >
                 Chaos
-              </span>{" "}
+              </motion.span>{" "}
               Into a Clear Plan
             </motion.h1>
 
@@ -94,50 +172,100 @@ export function Hero() {
               <strong>Take control of your monthly budget to free up cash</strong>, and track all your loans in one place.
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* Enhanced CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <Button
-                onClick={() => openAuthModal("signup")}
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-white text-base px-8 py-6 shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-105 transition-all"
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
-                Get Started Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                onClick={() => openAuthModal("login")}
-                variant="outline"
-                size="lg"
-                className="text-base px-8 py-6 border-2 bg-white hover:bg-slate-100 text-slate-900 hover:text-primary transition-colors"
+                <Button
+                  onClick={() => openAuthModal("signup")}
+                  size="lg"
+                  className="relative bg-gradient-to-r from-primary via-blue-600 to-primary text-white text-base px-8 py-6 shadow-lg shadow-primary/30 hover:shadow-xl transition-all overflow-hidden group"
+                >
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    initial={false}
+                  />
+                  <span className="relative z-10 flex items-center">
+                    Get Started Free
+                    <motion.div
+                      initial={{ x: 0 }}
+                      whileHover={{ x: 5 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </motion.div>
+                  </span>
+                  <motion.div
+                    className="absolute inset-0 bg-white/20"
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "100%" }}
+                    transition={{ duration: 0.6 }}
+                  />
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
-                Sign In
-              </Button>
+                <Button
+                  onClick={() => openAuthModal("login")}
+                  variant="outline"
+                  size="lg"
+                  className="text-base px-8 py-6 border-2 bg-white/80 backdrop-blur-sm hover:bg-white text-slate-900 hover:text-primary hover:border-primary/50 transition-all shadow-sm hover:shadow-md"
+                >
+                  Sign In
+                </Button>
+              </motion.div>
             </motion.div>
 
-            {/* Trust Indicators */}
+            {/* Enhanced Trust Indicators */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.6 }}
               className="flex flex-wrap items-center gap-6 justify-center lg:justify-start text-sm text-slate-500 pt-4"
             >
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-emerald-600" />
-                <span>Bank-level encryption</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-primary" />
-                <span>No hidden fees</span>
-              </div>
+              <motion.div 
+                className="flex items-center gap-2 group cursor-default"
+                whileHover={{ scale: 1.05, x: 5 }}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Shield className="h-4 w-4 text-emerald-600" />
+                </motion.div>
+                <span className="group-hover:text-emerald-600 transition-colors">Bank-level encryption</span>
+              </motion.div>
+              <motion.div 
+                className="flex items-center gap-2 group cursor-default"
+                whileHover={{ scale: 1.05, x: 5 }}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Zap className="h-4 w-4 text-primary" />
+                </motion.div>
+                <span className="group-hover:text-primary transition-colors">No hidden fees</span>
+              </motion.div>
             </motion.div>
           </motion.div>
 
-          {/* Right: Interactive 3D Dashboard Mockup */}
+          {/* Right: Enhanced Interactive 3D Dashboard Mockup */}
           <motion.div
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -151,13 +279,25 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.9, rotateY: -15 }}
             animate={{ opacity: 1, scale: 1, rotateY: 0 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            whileHover={{ scale: 1.02 }}
             className="relative hidden lg:block"
           >
-            {/* Glow Effect */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-primary/30 via-emerald-500/30 to-primary/30 rounded-3xl blur-3xl opacity-60" />
+            {/* Animated Glow Effect */}
+            <motion.div 
+              className="absolute -inset-4 bg-gradient-to-r from-primary/30 via-emerald-500/30 to-primary/30 rounded-3xl blur-3xl"
+              animate={{
+                opacity: [0.4, 0.7, 0.4],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
 
-            {/* Dashboard Preview Card - Glassmorphism */}
-            <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/50 p-6">
+            {/* Enhanced Dashboard Preview Card - Glassmorphism */}
+            <motion.div 
+              className="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/50 p-6"
+              whileHover={{ borderColor: "rgba(37, 99, 235, 0.3)" }}
+              transition={{ duration: 0.3 }}
+            >
               {/* Card Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
@@ -170,12 +310,13 @@ export function Hero() {
 
               {/* Mock Dashboard Content - Enhanced 3D */}
               <div className="space-y-4">
-                {/* Loan Plan Card with Gradient */}
+                {/* Enhanced Loan Plan Card with Gradient */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.6 }}
-                  className="bg-gradient-to-br from-primary/10 via-blue-50 to-emerald-50 rounded-xl p-4 border border-slate-200 border-primary/30 shadow-lg"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="bg-gradient-to-br from-primary/10 via-blue-50 to-emerald-50 rounded-xl p-4 border border-slate-200 border-primary/30 shadow-lg hover:shadow-xl transition-all cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-slate-900">Home Mortgage</h3>
@@ -195,12 +336,13 @@ export function Hero() {
                   </div>
                 </motion.div>
 
-                {/* Progress Chart with Glow */}
+                {/* Enhanced Progress Chart with Glow */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
-                  className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-4 border border-slate-200 shadow-md"
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-4 border border-slate-200 shadow-md hover:shadow-lg transition-all"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm font-medium text-slate-700">Payment Progress</p>
@@ -230,10 +372,11 @@ export function Hero() {
                   ].map((stat, idx) => (
                     <motion.div
                       key={stat.label}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.2 + idx * 0.15, duration: 0.5 }}
-                      className="bg-white rounded-xl p-3 border border-slate-200 text-center shadow-sm hover:shadow-md transition-shadow"
+                      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: 1.2 + idx * 0.15, duration: 0.5, type: "spring" }}
+                      whileHover={{ scale: 1.05, y: -3 }}
+                      className="bg-white rounded-xl p-3 border border-slate-200 text-center shadow-sm hover:shadow-lg transition-all cursor-pointer"
                     >
                       <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.color} mx-auto mb-2`} />
                       <p className="text-xs text-slate-500 mb-1">{stat.label}</p>
@@ -242,25 +385,38 @@ export function Hero() {
                   ))}
                 </div>
 
-                {/* Floating Payoff Card */}
+                {/* Enhanced Floating Payoff Card */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.5, duration: 0.6, type: "spring" }}
-                  className="mt-4 p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-xl border border-slate-200 border-emerald-400"
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="mt-4 p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-xl border border-slate-200 border-emerald-400 relative overflow-hidden cursor-pointer"
                 >
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                    animate={{ x: ["-100%", "100%"] }}
+                    transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                  />
                   <p className="text-xs text-emerald-50 mb-1">Today's Payoff</p>
                   <p className="text-2xl font-bold text-white">$185,230</p>
                   <p className="text-xs text-emerald-100 mt-1">Your freedom price</p>
                 </motion.div>
               </div>
 
-              {/* Floating Budget Surplus Card - Glassmorphism */}
+              {/* Enhanced Floating Budget Surplus Card - Glassmorphism */}
               <motion.div
                 initial={{ opacity: 0, y: -20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 1.7, duration: 0.6, type: "spring" }}
-                className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/80 p-3 z-20"
+                whileHover={{ scale: 1.05, y: -5 }}
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                }}
+                className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/80 p-3 z-20 cursor-pointer"
                 style={{
                   boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1), 0 0 20px rgba(16, 185, 129, 0.2)",
                 }}
@@ -269,7 +425,7 @@ export function Hero() {
                 <p className="text-xl font-bold text-emerald-600 mb-0.5">+$450</p>
                 <p className="text-[10px] text-slate-500">Auto-allocated to Principal</p>
               </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

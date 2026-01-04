@@ -86,17 +86,22 @@ export function SummaryCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="shadow-lg">
-        <CardHeader>
+      <Card className="shadow-xl border-slate-200/50 bg-white/95 backdrop-blur-sm relative overflow-hidden">
+        {/* Decorative gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5 pointer-events-none" />
+        
+        <CardHeader className="relative z-10">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <CardTitle className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Wallet className="h-5 w-5 text-primary" />
-              Payment Summary
-            </CardTitle>
+              <CardTitle className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                Payment Summary
+              </CardTitle>
+            </div>
             
             {/* Months Paid Dropdown - Centralized Control */}
             {onPaidMonthsChange && (
@@ -120,26 +125,30 @@ export function SummaryCard({
             )}
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {summaryItems.map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.div
                   key={item.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200"
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 + index * 0.1, type: "spring", stiffness: 100 }}
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-br from-slate-50 to-white border border-slate-200/50 hover:border-primary/30 hover:shadow-lg transition-all group cursor-default"
                 >
-                  <div className={`p-2 rounded-lg bg-white ${item.color}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
+                  <motion.div 
+                    className={`p-3 rounded-xl bg-gradient-to-br ${item.color.includes('primary') ? 'from-primary/10 to-primary/5' : item.color.includes('emerald') ? 'from-emerald-500/10 to-emerald-500/5' : item.color.includes('indigo') ? 'from-indigo-500/10 to-indigo-500/5' : 'from-slate-500/10 to-slate-500/5'} group-hover:scale-110 transition-transform`}
+                    whileHover={{ rotate: 5 }}
+                  >
+                    <Icon className={`h-5 w-5 ${item.color}`} />
+                  </motion.div>
                   <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-slate-500 group-hover:text-slate-700 transition-colors">
                       {item.label}
                     </p>
-                    <p className="text-lg font-semibold text-slate-900">
+                    <p className="text-lg font-semibold text-slate-900 group-hover:text-primary transition-colors">
                       {item.value}
                     </p>
                   </div>
@@ -155,14 +164,20 @@ export function SummaryCard({
             remainingMonths={remainingMonths}
           />
 
-          {/* Today's Payoff Amount Card */}
+          {/* Enhanced Today's Payoff Amount Card */}
           {schedule.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="mt-6 p-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl border border-slate-200 border-emerald-400 shadow-lg"
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
+              whileHover={{ scale: 1.02, y: -3 }}
+              className="mt-6 p-6 bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 rounded-xl border border-slate-200 border-emerald-400 shadow-xl relative overflow-hidden"
             >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                animate={{ x: ["-100%", "100%"] }}
+                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+              />
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
