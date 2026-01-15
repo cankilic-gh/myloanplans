@@ -30,6 +30,7 @@ export function InputSection({
   const [annualInterestRate, setAnnualInterestRate] = useState<string>("");
   const [loanTermMonths, setLoanTermMonths] = useState<string>("");
   const [downPayment, setDownPayment] = useState<string>("");
+  const [downPaymentPercent, setDownPaymentPercent] = useState<string>("");
   const [recurringExtraPayment, setRecurringExtraPayment] = useState<string>("");
 
   // Update form values when initialValues change (plan switch)
@@ -39,6 +40,13 @@ export function InputSection({
       setAnnualInterestRate(initialValues.annualInterestRate.toString());
       setLoanTermMonths(initialValues.loanTermMonths.toString());
       setDownPayment(initialValues.downPayment?.toString() || "");
+      // Calculate percentage from down payment if both values exist
+      if (initialValues.downPayment && initialValues.principal > 0) {
+        const percent = (initialValues.downPayment / initialValues.principal) * 100;
+        setDownPaymentPercent(percent.toFixed(2));
+      } else {
+        setDownPaymentPercent("");
+      }
       setRecurringExtraPayment(initialValues.recurringExtraPayment?.toString() || "");
     } else {
       // Clear form when no initial values
@@ -46,9 +54,47 @@ export function InputSection({
       setAnnualInterestRate("");
       setLoanTermMonths("");
       setDownPayment("");
+      setDownPaymentPercent("");
       setRecurringExtraPayment("");
     }
   }, [initialValues]);
+
+  // Handle down payment dollar change - sync percentage
+  const handleDownPaymentChange = (value: string) => {
+    setDownPayment(value);
+    const principalNum = parseFloat(principal);
+    const downPaymentNum = parseFloat(value);
+    if (principalNum > 0 && downPaymentNum >= 0) {
+      const percent = (downPaymentNum / principalNum) * 100;
+      setDownPaymentPercent(percent.toFixed(2));
+    } else if (!value) {
+      setDownPaymentPercent("");
+    }
+  };
+
+  // Handle down payment percentage change - sync dollar amount
+  const handleDownPaymentPercentChange = (value: string) => {
+    setDownPaymentPercent(value);
+    const principalNum = parseFloat(principal);
+    const percentNum = parseFloat(value);
+    if (principalNum > 0 && percentNum >= 0 && percentNum <= 100) {
+      const dollarAmount = (percentNum / 100) * principalNum;
+      setDownPayment(dollarAmount.toFixed(0));
+    } else if (!value) {
+      setDownPayment("");
+    }
+  };
+
+  // Handle principal change - recalculate percentage if down payment exists
+  const handlePrincipalChange = (value: string) => {
+    setPrincipal(value);
+    const principalNum = parseFloat(value);
+    const downPaymentNum = parseFloat(downPayment);
+    if (principalNum > 0 && downPaymentNum >= 0) {
+      const percent = (downPaymentNum / principalNum) * 100;
+      setDownPaymentPercent(percent.toFixed(2));
+    }
+  };
 
   // Helper to create inputs object
   const createInputsObject = (): MortgageInputs => {
@@ -123,7 +169,7 @@ export function InputSection({
                 type="number"
                 placeholder="500,000"
                 value={principal}
-                onChange={(e) => setPrincipal(e.target.value)}
+                onChange={(e) => handlePrincipalChange(e.target.value)}
                 min="0"
                 step="1000"
               />
@@ -156,17 +202,32 @@ export function InputSection({
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="downPayment">Down Payment ($) - Optional</Label>
-              <Input
-                id="downPayment"
-                type="number"
-                placeholder="100,000"
-                value={downPayment}
-                onChange={(e) => setDownPayment(e.target.value)}
-                min="0"
-                step="1000"
-              />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
+                <Label htmlFor="downPayment">Down Payment ($)</Label>
+                <Input
+                  id="downPayment"
+                  type="number"
+                  placeholder="100,000"
+                  value={downPayment}
+                  onChange={(e) => handleDownPaymentChange(e.target.value)}
+                  min="0"
+                  step="1000"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="downPaymentPercent">Down Payment (%)</Label>
+                <Input
+                  id="downPaymentPercent"
+                  type="number"
+                  placeholder="20"
+                  value={downPaymentPercent}
+                  onChange={(e) => handleDownPaymentPercentChange(e.target.value)}
+                  min="0"
+                  max="100"
+                  step="0.1"
+                />
+              </div>
             </div>
 
             <div className="space-y-2 md:col-span-2">
