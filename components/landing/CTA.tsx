@@ -4,11 +4,22 @@ import { motion, useAnimationFrame } from "framer-motion";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/stores/useUIStore";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export function CTA() {
   const { openAuthModal } = useUIStore();
+  const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
+
+  const handleGetStarted = () => {
+    // Set guest mode flag and redirect to dashboard
+    sessionStorage.setItem("isGuest", "true");
+    sessionStorage.setItem("isAuthenticated", "true");
+    sessionStorage.setItem("userName", "Guest User");
+    sessionStorage.setItem("userEmail", "guest@local");
+    router.push("/dashboard");
+  };
   
   // Floating animation
   const floatingY = useRef(0);
@@ -152,7 +163,7 @@ export function CTA() {
               whileTap={{ scale: 0.98 }}
             >
               <Button
-                onClick={() => openAuthModal("signup")}
+                onClick={handleGetStarted}
                 size="lg"
                 className="relative bg-white text-primary hover:bg-white/90 text-base px-8 py-6 shadow-2xl hover:shadow-3xl transition-all font-semibold overflow-hidden group"
               >

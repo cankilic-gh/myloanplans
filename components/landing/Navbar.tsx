@@ -5,12 +5,23 @@ import { motion, useScroll, useMotionValueEvent, useTransform } from "framer-mot
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/stores/useUIStore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LogIn, Sparkles } from "lucide-react";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
   const { openAuthModal } = useUIStore();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    // Set guest mode flag and redirect to dashboard
+    sessionStorage.setItem("isGuest", "true");
+    sessionStorage.setItem("isAuthenticated", "true");
+    sessionStorage.setItem("userName", "Guest User");
+    sessionStorage.setItem("userEmail", "guest@local");
+    router.push("/dashboard");
+  };
 
   const backgroundOpacity = useTransform(scrollY, [0, 100], [0, 0.95]);
   const blurAmount = useTransform(scrollY, [0, 100], [0, 16]);
@@ -76,7 +87,7 @@ export function Navbar() {
               whileTap={{ scale: 0.95 }}
             >
               <Button
-                onClick={() => openAuthModal("signup")}
+                onClick={handleGetStarted}
                 variant="default"
                 size="lg"
                 className="relative bg-gradient-to-r from-primary via-blue-600 to-primary text-white shadow-lg shadow-primary/30 hover:shadow-xl transition-all overflow-hidden group"

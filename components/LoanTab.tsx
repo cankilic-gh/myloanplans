@@ -9,6 +9,7 @@ import { AmortizationTable } from "@/components/AmortizationTable";
 import { EmptyLoanState } from "@/components/EmptyLoanState";
 import { EditLoanDialog } from "@/components/EditLoanDialog";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Save, Trash2, Settings2 } from "lucide-react";
 import { saveUserData, loadUserData } from "@/lib/storage";
 import {
@@ -52,6 +53,7 @@ export function LoanTab({
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanPlan | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [savedPlansData, setSavedPlansData] = useState<Map<string, SavedPlanData>>(new Map());
 
   // Load saved data on mount
@@ -313,48 +315,84 @@ export function LoanTab({
     setIsSaving(false);
   };
 
-  const handleDelete = async () => {
+  const handleDeleteClick = () => {
     if (!activePlanId) return;
-    
-    if (!confirm(`Are you sure you want to delete "${activePlan?.name}"? This action cannot be undone.`)) {
-      return;
-    }
-    
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!activePlanId) return;
+
     setIsDeleting(true);
-    
+
     try {
-      // Delete from API/database
-      const { deleteLoanPlan } = await import("@/lib/api/loan-plans");
-      await deleteLoanPlan(activePlanId);
-      
-      // Update local state
-      const remainingPlans = plans.filter(p => p.id !== activePlanId);
-      
-      // Clear saved data for this plan
-      const newSavedPlansData = new Map(savedPlansData);
-      newSavedPlansData.delete(activePlanId);
-      setSavedPlansData(newSavedPlansData);
-      
-      // Update localStorage
-      if (userEmail) {
-        saveUserData(userEmail, remainingPlans, newSavedPlansData);
+      // Check if this is the last plan
+      const isLastPlan = plans.length === 1;
+
+      if (isLastPlan) {
+        // Reset the plan data instead of deleting
+        const newSavedPlansData = new Map(savedPlansData);
+        newSavedPlansData.delete(activePlanId);
+        setSavedPlansData(newSavedPlansData);
+
+        // Reset local state
+        setResult(null);
+        setInputs(null);
+        setUpdatedSchedule(null);
+        setOneTimePayments(new Map());
+
+        // Update localStorage
+        if (userEmail) {
+          saveUserData(userEmail, plans, newSavedPlansData);
+        }
+
+        // Also update localStorage for guest mode
+        const guestMode = sessionStorage.getItem("isGuest");
+        if (guestMode === "true") {
+          const guestPlansData = localStorage.getItem("guest_loan_plans_data");
+          if (guestPlansData) {
+            const parsed = JSON.parse(guestPlansData);
+            delete parsed[activePlanId];
+            localStorage.setItem("guest_loan_plans_data", JSON.stringify(parsed));
+          }
+        }
+      } else {
+        // Delete from API/database (only for authenticated users)
+        const guestMode = sessionStorage.getItem("isGuest");
+        if (guestMode !== "true") {
+          const { deleteLoanPlan } = await import("@/lib/api/loan-plans");
+          await deleteLoanPlan(activePlanId);
+        }
+
+        // Update local state
+        const remainingPlans = plans.filter(p => p.id !== activePlanId);
+
+        // Clear saved data for this plan
+        const newSavedPlansData = new Map(savedPlansData);
+        newSavedPlansData.delete(activePlanId);
+        setSavedPlansData(newSavedPlansData);
+
+        // Update localStorage
+        if (userEmail) {
+          saveUserData(userEmail, remainingPlans, newSavedPlansData);
+        }
+
+        // Update parent component's plans list
+        onPlansChange(remainingPlans);
+
+        // If we deleted the active plan, select the first remaining plan
+        if (remainingPlans.length > 0) {
+          onPlanSelect(remainingPlans[0].id);
+        }
+
+        // Dispatch event to reload plans from API in dashboard
+        window.dispatchEvent(new CustomEvent("loan-plan-deleted"));
       }
-      
-      // Update parent component's plans list
-      onPlansChange(remainingPlans);
-      
-      // If we deleted the active plan, select the first remaining plan
-      if (remainingPlans.length > 0) {
-        onPlanSelect(remainingPlans[0].id);
-      }
-      
-      // Dispatch event to reload plans from API in dashboard
-      window.dispatchEvent(new CustomEvent("loan-plan-deleted"));
     } catch (error) {
       console.error("Error deleting loan plan:", error);
-      alert(`Failed to delete loan plan: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -432,14 +470,14 @@ export function LoanTab({
                   whileTap={{ scale: 0.95 }}
                 >
                   <Button
-                    onClick={handleDelete}
+                    onClick={handleDeleteClick}
                     disabled={isDeleting}
                     variant="destructive"
                     className="h-11 px-6 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold shadow-lg shadow-red-500/30 hover:shadow-xl transition-all duration-200"
                     aria-label="Delete loan plan"
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    {isDeleting ? "Deleting..." : "Delete"}
+                    Delete
                   </Button>
                 </motion.div>
               </motion.div>
@@ -515,6 +553,21 @@ export function LoanTab({
           onClose={() => setEditingLoan(null)}
         />
       )}
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDeleteConfirm}
+        title={plans.length === 1 ? "Reset Loan Plan?" : "Delete Loan Plan?"}
+        message={
+          plans.length === 1
+            ? `This is your only loan plan. The data will be reset to defaults, but the plan "${activePlan?.name}" will be kept.`
+            : `Are you sure you want to delete "${activePlan?.name}"? This action cannot be undone.`
+        }
+        confirmText={plans.length === 1 ? "Reset Data" : "Delete"}
+        variant={plans.length === 1 ? "warning" : "danger"}
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

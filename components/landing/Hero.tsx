@@ -5,12 +5,23 @@ import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } fr
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/stores/useUIStore";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, TrendingUp, Shield, Zap, Sparkles } from "lucide-react";
 
 export function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
   const { openAuthModal } = useUIStore();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    // Set guest mode flag and redirect to dashboard
+    sessionStorage.setItem("isGuest", "true");
+    sessionStorage.setItem("isAuthenticated", "true");
+    sessionStorage.setItem("userName", "Guest User");
+    sessionStorage.setItem("userEmail", "guest@local");
+    router.push("/dashboard");
+  };
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -184,7 +195,7 @@ export function Hero() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Button
-                  onClick={() => openAuthModal("signup")}
+                  onClick={handleGetStarted}
                   size="lg"
                   className="relative bg-gradient-to-r from-primary via-blue-600 to-primary text-white text-base px-8 py-6 shadow-lg shadow-primary/30 hover:shadow-xl transition-all overflow-hidden group"
                 >

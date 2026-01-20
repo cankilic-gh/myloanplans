@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchCategories, createCategory, deleteCategory, type Category } from "@/lib/api/budget/categories";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Trash2 } from "lucide-react";
 
 export default function CategoriesList() {
@@ -12,6 +13,8 @@ export default function CategoriesList() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryType, setNewCategoryType] = useState<"EXPENSE" | "INCOME">("EXPENSE");
   const [addError, setAddError] = useState<string | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function loadCategories() {
     try {
@@ -118,19 +121,9 @@ export default function CategoriesList() {
                 <span>{cat.name}</span>
                 <button
                   type="button"
-                  onClick={async (e) => {
+                  onClick={(e) => {
                     e.stopPropagation();
-                    if (confirm(`Are you sure you want to delete "${cat.name}"?`)) {
-                      try {
-                        await deleteCategory(cat.id);
-                        await loadCategories();
-                        window.dispatchEvent(new CustomEvent("category-changed"));
-                      } catch (err) {
-                        const errorMessage = err instanceof Error ? err.message : "Failed to delete category";
-                        alert(errorMessage);
-                        console.error("Error deleting category:", err);
-                      }
-                    }
+                    setCategoryToDelete(cat);
                   }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-200 rounded text-red-700"
                   title="Delete category"
@@ -142,6 +135,31 @@ export default function CategoriesList() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!categoryToDelete}
+        onClose={() => setCategoryToDelete(null)}
+        onConfirm={async () => {
+          if (!categoryToDelete) return;
+          setIsDeleting(true);
+          try {
+            await deleteCategory(categoryToDelete.id);
+            await loadCategories();
+            window.dispatchEvent(new CustomEvent("category-changed"));
+          } catch (err) {
+            console.error("Error deleting category:", err);
+          } finally {
+            setIsDeleting(false);
+            setCategoryToDelete(null);
+          }
+        }}
+        title="Delete Category?"
+        message={`Are you sure you want to delete "${categoryToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        variant="danger"
+        isLoading={isDeleting}
+      />
 
       {/* Add Category Modal */}
       {isAddModalOpen && (
