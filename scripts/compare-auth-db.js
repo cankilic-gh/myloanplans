@@ -6,8 +6,14 @@ require('dotenv').config({ path: '.env.production' });
 const prisma = new PrismaClient();
 
 // Connect to Supabase for auth.users
-const supabaseUrl = 'https://yixsbgjzwmzycrroplyp.supabase.co';
-const supabaseServiceKey = '***REMOVED_SECRET***';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables');
+  process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
