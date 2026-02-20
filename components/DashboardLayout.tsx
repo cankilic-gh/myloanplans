@@ -1,9 +1,10 @@
 "use client";
 
 import { ReactNode } from "react";
-import { DashboardSidebar, type LoanPlan } from "@/components/DashboardSidebar";
+import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { useAutoLogout } from "@/hooks/useIdleTimer";
 import { SessionWarning } from "@/components/SessionWarning";
+import type { LoanPlan } from "@/lib/types/loan";
 
 export type { LoanPlan };
 

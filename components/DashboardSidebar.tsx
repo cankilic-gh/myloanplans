@@ -6,12 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Plus, Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-
-export interface LoanPlan {
-  id: string;
-  name: string;
-  createdAt: string;
-}
+import { useAuthStore } from "@/stores/useAuthStore";
+import type { LoanPlan } from "@/lib/types/loan";
 
 interface SidebarProps {
   plans: LoanPlan[];
@@ -40,20 +36,14 @@ export function DashboardSidebar({
   const router = useRouter();
 
   const handleLogout = () => {
-    // Clear session storage
-    sessionStorage.removeItem("isAuthenticated");
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("userEmail");
-    sessionStorage.removeItem("verificationEmail");
-    sessionStorage.removeItem("devVerificationCode");
-    sessionStorage.removeItem("codeExpiresAt");
-    sessionStorage.removeItem("emailSent");
-    
+    // Clear auth state via Zustand store
+    useAuthStore.getState().logout();
+
     // Call custom logout handler if provided
     if (onLogout) {
       onLogout();
     }
-    
+
     // Navigate to landing page
     router.push("/");
   };

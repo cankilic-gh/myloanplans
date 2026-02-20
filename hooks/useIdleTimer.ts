@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 interface UseIdleTimerOptions {
   timeout: number; // in milliseconds
@@ -81,13 +82,12 @@ export function useIdleTimer({ timeout, onIdle, warningTime }: UseIdleTimerOptio
 export function useAutoLogout() {
   const router = useRouter();
   const [showWarning, setShowWarning] = useState(false);
+  const logout = useAuthStore((state) => state.logout);
 
   const handleIdle = () => {
-    // Clear authentication
-    sessionStorage.removeItem("isAuthenticated");
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("userEmail");
-    
+    // Clear authentication via Zustand store
+    logout();
+
     // Redirect to landing page
     router.push("/");
   };

@@ -1,60 +1,55 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DashboardLayout, LoanPlan } from "@/components/DashboardLayout";
+import { DashboardLayout } from "@/components/DashboardLayout";
 import { LoanTab } from "@/components/LoanTab";
 import BudgetTab from "@/components/BudgetTab";
 import { saveUserData, loadUserData } from "@/lib/storage";
 import { fetchLoanPlans } from "@/lib/api/loan-plans";
+import { useAuthStore } from "@/stores/useAuthStore";
+import type { LoanPlan } from "@/lib/types/loan";
 
 const initialPlans: LoanPlan[] = [];
 
 // Guest mode localStorage keys
 const GUEST_PLANS_KEY = "guest_loan_plans";
-const GUEST_BUDGET_KEY = "guest_budget_data";
 
 export default function DashboardPage() {
   const [activeSection, setActiveSection] = useState<"loan" | "budget">("loan");
   const [plans, setPlans] = useState<LoanPlan[]>(initialPlans);
   const [activePlanId, setActivePlanId] = useState<string | null>(initialPlans[0]?.id || null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userName, setUserName] = useState<string>("Guest User");
-  const [userEmail, setUserEmail] = useState<string>("guest@local");
-  const [isGuest, setIsGuest] = useState(false);
+
+  // Auth state from Zustand store
+  const {
+    isAuthenticated,
+    isGuest,
+    userName: authUserName,
+    userEmail: authUserEmail,
+    loginAsGuest,
+  } = useAuthStore();
+
+  const userName = authUserName || "Guest User";
+  const userEmail = authUserEmail || "guest@local";
 
   // Check authentication - allow guest mode
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-      const guestMode = sessionStorage.getItem("isGuest");
-
       // Allow guest mode without redirecting to login
-      if (isAuthenticated !== "true" && guestMode !== "true") {
+      if (!isAuthenticated && !isGuest) {
         // Set guest mode automatically for first-time visitors
-        sessionStorage.setItem("isGuest", "true");
-        sessionStorage.setItem("isAuthenticated", "true");
-        sessionStorage.setItem("userName", "Guest User");
-        sessionStorage.setItem("userEmail", "guest@local");
+        loginAsGuest();
       }
-
-      setIsGuest(guestMode === "true");
     }
-  }, []);
+  }, [isAuthenticated, isGuest, loginAsGuest]);
 
   // Load user info and loan plans from API or localStorage (guest mode)
   useEffect(() => {
     async function loadData() {
       try {
         if (typeof window !== "undefined") {
-          const storedName = sessionStorage.getItem("userName");
-          const storedEmail = sessionStorage.getItem("userEmail");
-          const guestMode = sessionStorage.getItem("isGuest");
-
-          if (storedName) setUserName(storedName);
-          if (storedEmail) setUserEmail(storedEmail);
-
           // Guest mode: Load from localStorage only
-          if (guestMode === "true") {
+          if (isGuest) {
             const savedPlans = localStorage.getItem(GUEST_PLANS_KEY);
             if (savedPlans) {
               const parsedPlans = JSON.parse(savedPlans) as LoanPlan[];
@@ -87,7 +82,7 @@ export default function DashboardPage() {
             return;
           }
 
-          if (storedEmail && storedEmail !== "guest@local") {
+          if (userEmail && userEmail !== "guest@local") {
             // Authenticated user: Load from API
             try {
               const apiPlans = await fetchLoanPlans();
@@ -112,8 +107,7 @@ export default function DashboardPage() {
                 setActivePlanId(defaultPlan.id);
               }
             } catch (apiError) {
-              console.error("Error fetching loan plans from API:", apiError);
-              const savedData = loadUserData(storedEmail);
+              const savedData = loadUserData(userEmail);
               if (savedData && savedData.plans.length > 0) {
                 setPlans(savedData.plans);
                 setActivePlanId(savedData.plans[0]?.id || null);
@@ -140,7 +134,6 @@ export default function DashboardPage() {
           }
         }
       } catch (error) {
-        console.error("Error loading dashboard data:", error);
         // Error occurred, create default plan
         const defaultPlan: LoanPlan = {
           id: Date.now().toString(),
@@ -155,7 +148,7 @@ export default function DashboardPage() {
     }
 
     loadData();
-  }, []);
+  }, [isGuest, userEmail]);
 
   const handleAddNewPlan = () => {
     const newPlan: LoanPlan = {
@@ -220,7 +213,7 @@ export default function DashboardPage() {
           }
         }
       } catch (error) {
-        console.error("Error reloading plans:", error);
+        // Silent fail for plan reload
       }
     };
 

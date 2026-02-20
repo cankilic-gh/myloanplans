@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
-import { LoanPlan } from "@/components/DashboardLayout";
+import { LoanPlan, RuntimePlanData } from "@/lib/types/loan";
 import { InputSection } from "@/components/InputSection";
 import { SummaryCard } from "@/components/SummaryCard";
 import { AmortizationTable } from "@/components/AmortizationTable";
@@ -19,14 +19,7 @@ import {
   generateAmortizationSchedule,
   recalculateScheduleFromMonth,
 } from "@/utils/mortgageMath";
-
-interface SavedPlanData {
-  inputs: MortgageInputs;
-  result?: MortgageResult;
-  updatedSchedule?: PaymentScheduleRow[];
-  oneTimePayments: Map<number, number>;
-  paidMonths?: number;
-}
+import { useAuthStore } from "@/stores/useAuthStore";
 
 interface LoanTabProps {
   plans: LoanPlan[];
@@ -54,7 +47,7 @@ export function LoanTab({
   const [isDeleting, setIsDeleting] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanPlan | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [savedPlansData, setSavedPlansData] = useState<Map<string, SavedPlanData>>(new Map());
+  const [savedPlansData, setSavedPlansData] = useState<Map<string, RuntimePlanData>>(new Map());
 
   // Load saved data on mount
   useEffect(() => {
@@ -239,18 +232,18 @@ export function LoanTab({
     const timeoutId = setTimeout(() => {
       const existingData = savedPlansData.get(activePlanId);
       const preservedPaidMonths = existingData?.paidMonths ?? 0;
-      const planData: SavedPlanData = {
+      const planData: RuntimePlanData = {
         inputs,
         result: result || existingData?.result,
         updatedSchedule: updatedSchedule || existingData?.updatedSchedule,
         oneTimePayments: oneTimePayments.size > 0 ? new Map(oneTimePayments) : (existingData?.oneTimePayments || new Map()),
         paidMonths: preservedPaidMonths,
       };
-      
+
       const newSavedPlansData = new Map(savedPlansData);
       newSavedPlansData.set(activePlanId, planData);
       setSavedPlansData(newSavedPlansData);
-      
+
       saveUserData(userEmail, plans, newSavedPlansData);
     }, 1000);
     
@@ -270,18 +263,18 @@ export function LoanTab({
     const timeoutId = setTimeout(() => {
       const existingData = savedPlansData.get(activePlanId);
       const preservedPaidMonths = existingData?.paidMonths ?? 0;
-      const planData: SavedPlanData = {
+      const planData: RuntimePlanData = {
         inputs,
         result,
         updatedSchedule: updatedSchedule || undefined,
         oneTimePayments: new Map(oneTimePayments),
         paidMonths: preservedPaidMonths,
       };
-      
+
       const newSavedPlansData = new Map(savedPlansData);
       newSavedPlansData.set(activePlanId, planData);
       setSavedPlansData(newSavedPlansData);
-      
+
       saveUserData(userEmail, plans, newSavedPlansData);
     }, 500);
     
@@ -290,28 +283,28 @@ export function LoanTab({
 
   const handleSave = async () => {
     if (!activePlanId || !inputs) return;
-    
+
     setIsSaving(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    
+
     const existingData = savedPlansData.get(activePlanId);
     const preservedPaidMonths = existingData?.paidMonths ?? 0;
-    const planData: SavedPlanData = {
+    const planData: RuntimePlanData = {
       inputs,
       result: result || undefined,
       updatedSchedule: updatedSchedule || undefined,
       oneTimePayments: new Map(oneTimePayments),
       paidMonths: preservedPaidMonths,
     };
-    
+
     const newSavedPlansData = new Map(savedPlansData);
     newSavedPlansData.set(activePlanId, planData);
     setSavedPlansData(newSavedPlansData);
-    
+
     if (userEmail) {
       saveUserData(userEmail, plans, newSavedPlansData);
     }
-    
+
     setIsSaving(false);
   };
 
@@ -326,6 +319,7 @@ export function LoanTab({
     setIsDeleting(true);
 
     try {
+      const { isGuest } = useAuthStore.getState();
       // Check if this is the last plan
       const isLastPlan = plans.length === 1;
 
@@ -347,8 +341,7 @@ export function LoanTab({
         }
 
         // Also update localStorage for guest mode
-        const guestMode = sessionStorage.getItem("isGuest");
-        if (guestMode === "true") {
+        if (isGuest) {
           const guestPlansData = localStorage.getItem("guest_loan_plans_data");
           if (guestPlansData) {
             const parsed = JSON.parse(guestPlansData);
@@ -358,8 +351,7 @@ export function LoanTab({
         }
       } else {
         // Delete from API/database (only for authenticated users)
-        const guestMode = sessionStorage.getItem("isGuest");
-        if (guestMode !== "true") {
+        if (!isGuest) {
           const { deleteLoanPlan } = await import("@/lib/api/loan-plans");
           await deleteLoanPlan(activePlanId);
         }

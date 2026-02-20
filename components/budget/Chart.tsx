@@ -77,8 +77,6 @@ export default function Chart() {
         fetchRecurringExpenses(), // Get all recurring expenses
       ]);
       
-      console.log("[Chart] Fetched transactions:", transactions.length);
-      console.log("[Chart] Fetched recurring expenses:", recurringExpenses.length);
       
       // Group transactions by month and category
       const monthDataMap = new Map<string, Map<string, number>>(); // month -> categoryId -> amount
@@ -182,13 +180,6 @@ export default function Chart() {
         const currentAmount = categoryMap.get(categoryId) || 0;
         categoryMap.set(categoryId, currentAmount + recurring.amount);
         
-        console.log("[Chart] Added recurring expense to chart:", {
-          name: recurring.name,
-          amount: recurring.amount,
-          monthKey,
-          categoryId,
-          type: recurring.type,
-        });
       });
       
       // Combine real and virtual categories
@@ -236,10 +227,8 @@ export default function Chart() {
       // Store max amounts for color calculation
       setCategoryColorMap(categoryMaxAmounts as any);
       
-      console.log("[Chart] Final chart data:", chartDataPoints);
       setChartData(chartDataPoints);
     } catch (err) {
-      console.error("[Chart] Error loading chart data:", err);
       setChartData([]);
     } finally {
       setLoading(false);
