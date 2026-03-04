@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } fr
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/stores/useUIStore";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowRight, TrendingUp, Shield, Zap, Sparkles } from "lucide-react";
 
@@ -61,14 +62,27 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-32 lg:pt-40 pb-20 px-4 sm:px-6 lg:px-8">
+      {/* Hero Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/hero-bg.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-50"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/30 to-white/70" />
+      </div>
+
       {/* Animated Background Gradient */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50"
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-slate-50/60 via-blue-50/20 to-indigo-50/30"
         animate={{
           background: [
-            "linear-gradient(to bottom right, rgb(248 250 252), rgb(239 246 255 / 0.3), rgb(238 242 255 / 0.5))",
-            "linear-gradient(to bottom right, rgb(239 246 255 / 0.3), rgb(248 250 252), rgb(238 242 255 / 0.5))",
-            "linear-gradient(to bottom right, rgb(248 250 252), rgb(239 246 255 / 0.3), rgb(238 242 255 / 0.5))",
+            "linear-gradient(to bottom right, rgb(248 250 252 / 0.6), rgb(239 246 255 / 0.2), rgb(238 242 255 / 0.3))",
+            "linear-gradient(to bottom right, rgb(239 246 255 / 0.2), rgb(248 250 252 / 0.6), rgb(238 242 255 / 0.3))",
+            "linear-gradient(to bottom right, rgb(248 250 252 / 0.6), rgb(239 246 255 / 0.2), rgb(238 242 255 / 0.3))",
           ],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}

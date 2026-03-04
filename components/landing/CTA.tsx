@@ -32,7 +32,7 @@ export function CTA() {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Gradient */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-gradient-to-br from-primary via-blue-600 to-emerald-600"
         animate={{
           background: [
@@ -96,6 +96,16 @@ export function CTA() {
           }}
         />
       ))}
+
+      {/* CTA Background Image - above gradient, below content */}
+      <div
+        className="absolute inset-0 z-[5] opacity-20 mix-blend-soft-light"
+        style={{
+          backgroundImage: "url(/images/cta-bg.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
 
       <div ref={ref} className="max-w-4xl mx-auto relative z-10">
         <motion.div
