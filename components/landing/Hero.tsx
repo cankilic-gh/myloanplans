@@ -147,7 +147,7 @@ export function Hero() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5, type: "spring", stiffness: 200 }}
               whileHover={{ scale: 1.05, y: -2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-blue-50 border border-slate-200 border-emerald-200/50 rounded-full text-emerald-700 text-sm font-medium shadow-sm hover:shadow-md transition-all cursor-default"
+              className="relative inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-blue-50 border border-slate-200 border-emerald-200/50 rounded-full text-emerald-700 text-sm font-medium shadow-sm hover:shadow-md transition-all cursor-default"
             >
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
@@ -156,11 +156,10 @@ export function Hero() {
                 <TrendingUp className="h-4 w-4" />
               </motion.div>
               <span>Trusted by thousands of users</span>
-              <motion.div
-                className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full"
-                animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+              </span>
             </motion.div>
 
             {/* Animated Headline */}
