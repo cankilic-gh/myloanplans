@@ -89,9 +89,14 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Fetch savings goals for the user
+    // Fetch savings goals for the user (including extra contributions)
     const savingsGoals = await prisma.savingsGoal.findMany({
       where: { userId },
+      include: {
+        contributions: {
+          select: { amount: true, date: true },
+        },
+      },
     });
 
     // Sum monthly savings contributions
@@ -99,6 +104,21 @@ export async function GET(request: NextRequest) {
       (sum, g) => sum + (g.monthlyAmount ?? 0),
       0
     );
+
+    // Build a map of extra contributions by month for this year
+    const extraContributionsByMonth: Record<number, number> = {};
+    for (let m = 1; m <= 12; m++) {
+      extraContributionsByMonth[m] = 0;
+    }
+    for (const goal of savingsGoals) {
+      for (const contribution of goal.contributions) {
+        const contribYear = contribution.date.getFullYear();
+        const contribMonth = contribution.date.getMonth() + 1;
+        if (contribYear === year) {
+          extraContributionsByMonth[contribMonth] += contribution.amount;
+        }
+      }
+    }
 
     // Separate income and expenses
     const recurringIncomeItems = recurringItems.filter((r) => r.type === "income");
@@ -176,7 +196,7 @@ export async function GET(request: NextRequest) {
 
       const oneOffIncome = oneOffByMonth[month].income;
       const oneOffExpense = oneOffByMonth[month].expense;
-      const savingsExpense = monthlySavings;
+      const savingsExpense = monthlySavings + (extraContributionsByMonth[month] ?? 0);
 
       const monthNet = recurringIncome - recurringExpense - savingsExpense + oneOffIncome - oneOffExpense;
       runningBalance += monthNet;

@@ -14,16 +14,25 @@ interface Projections {
   finalBalance: number;
 }
 
+interface ContributionItem {
+  amount: number;
+  date: Date;
+}
+
 function calculateProjections(
   initialAmount: number,
   monthlyAmount: number,
   annualRate: number,
-  years: number
+  years: number,
+  extraContributions: ContributionItem[] = []
 ): Projections {
   const monthlyRate = annualRate / 100 / 12;
   const yearlyBreakdown: YearlyBreakdown[] = [];
 
-  let balance = initialAmount;
+  // Sum all extra contributions to add to initial balance
+  const extraTotal = extraContributions.reduce((sum, c) => sum + c.amount, 0);
+
+  let balance = initialAmount + extraTotal;
   const totalMonths = years * 12;
 
   for (let month = 1; month <= totalMonths; month++) {
@@ -37,7 +46,7 @@ function calculateProjections(
     }
   }
 
-  const totalContributions = initialAmount + monthlyAmount * totalMonths;
+  const totalContributions = initialAmount + extraTotal + monthlyAmount * totalMonths;
   const finalBalance = Math.round(balance * 100) / 100;
   const totalInterest = Math.round((finalBalance - totalContributions) * 100) / 100;
 
@@ -63,6 +72,7 @@ export async function GET(request: NextRequest) {
     const savingsGoals = await prisma.savingsGoal.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
+      include: { contributions: { orderBy: { date: "desc" } } },
     });
 
     const goalsWithProjections = savingsGoals.map((goal) => ({
@@ -71,7 +81,8 @@ export async function GET(request: NextRequest) {
         goal.initialAmount,
         goal.monthlyAmount,
         goal.interestRate,
-        goal.projectionYears
+        goal.projectionYears,
+        goal.contributions
       ),
     }));
 
@@ -122,7 +133,8 @@ export async function POST(request: NextRequest) {
       goal.initialAmount,
       goal.monthlyAmount,
       goal.interestRate,
-      goal.projectionYears
+      goal.projectionYears,
+      []
     );
 
     return NextResponse.json(

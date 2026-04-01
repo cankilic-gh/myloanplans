@@ -15,6 +15,15 @@ interface SavingsProjections {
   finalBalance: number;
 }
 
+interface SavingsContribution {
+  id: string;
+  goalId: string;
+  amount: number;
+  date: string;
+  note?: string | null;
+  createdAt: string;
+}
+
 interface SavingsGoal {
   id: string;
   name: string;
@@ -23,6 +32,7 @@ interface SavingsGoal {
   interestRate: number;
   projectionYears: number;
   projections?: SavingsProjections;
+  contributions?: SavingsContribution[];
   createdAt: string;
   updatedAt?: string;
 }
@@ -33,6 +43,12 @@ interface SavingsGoalFormData {
   monthlyAmount: number;
   interestRate: number;
   projectionYears: number;
+}
+
+interface ExtraContributionForm {
+  amount: string;
+  date: string;
+  note: string;
 }
 
 function getUserEmail(): string {
@@ -47,6 +63,18 @@ const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
+const formatDate = (dateStr: string): string => {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const todayIso = (): string => {
+  return new Date().toISOString().slice(0, 10);
+};
+
 const emptyForm: SavingsGoalFormData = {
   name: "",
   initialAmount: 0,
@@ -55,22 +83,118 @@ const emptyForm: SavingsGoalFormData = {
   projectionYears: 5,
 };
 
+const emptyExtraForm: ExtraContributionForm = {
+  amount: "",
+  date: todayIso(),
+  note: "",
+};
+
 function GoalCard({
   goal,
   onEdit,
   onDelete,
+  onContributionAdded,
 }: {
   goal: SavingsGoal;
   onEdit: (goal: SavingsGoal) => void;
   onDelete: (id: string) => void;
+  onContributionAdded: () => void;
 }) {
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [showExtraForm, setShowExtraForm] = useState(false);
+  const [showContributions, setShowContributions] = useState(false);
+  const [extraForm, setExtraForm] = useState<ExtraContributionForm>(emptyExtraForm);
+  const [extraSubmitting, setExtraSubmitting] = useState(false);
+  const [extraError, setExtraError] = useState<string | null>(null);
+  const [deletingContributionId, setDeletingContributionId] = useState<string | null>(null);
+
   const yearlyBreakdown = goal.projections?.yearlyBreakdown || [];
   const finalBalance = goal.projections?.finalBalance || 0;
+  const contributions = goal.contributions || [];
   const maxBalance =
     yearlyBreakdown.length > 0
       ? Math.max(...yearlyBreakdown.map((y) => y.balance))
       : finalBalance;
+
+  function openExtraForm() {
+    setExtraForm({ ...emptyExtraForm, date: todayIso() });
+    setExtraError(null);
+    setShowExtraForm(true);
+  }
+
+  function cancelExtraForm() {
+    setShowExtraForm(false);
+    setExtraError(null);
+  }
+
+  async function handleAddContribution(e: React.FormEvent) {
+    e.preventDefault();
+    setExtraError(null);
+
+    const amount = parseFloat(extraForm.amount);
+    if (!extraForm.amount || isNaN(amount) || amount <= 0) {
+      setExtraError("Enter a valid positive amount");
+      return;
+    }
+    if (!extraForm.date) {
+      setExtraError("Date is required");
+      return;
+    }
+
+    try {
+      setExtraSubmitting(true);
+      const res = await fetch(`/api/budget/savings/${goal.id}/contributions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": getUserEmail(),
+        },
+        body: JSON.stringify({
+          amount,
+          date: extraForm.date,
+          note: extraForm.note.trim() || undefined,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(body || `Request failed: ${res.status}`);
+      }
+
+      cancelExtraForm();
+      window.dispatchEvent(new Event("transaction-changed"));
+      onContributionAdded();
+    } catch (err) {
+      setExtraError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setExtraSubmitting(false);
+    }
+  }
+
+  async function handleDeleteContribution(contributionId: string) {
+    setDeletingContributionId(contributionId);
+    try {
+      const res = await fetch(
+        `/api/budget/savings/${goal.id}/contributions?contributionId=${contributionId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-email": getUserEmail(),
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error(`Delete failed: ${res.status}`);
+      }
+      window.dispatchEvent(new Event("transaction-changed"));
+      onContributionAdded();
+    } catch (err) {
+      console.error("Error deleting contribution:", err);
+    } finally {
+      setDeletingContributionId(null);
+    }
+  }
 
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg">
@@ -85,6 +209,14 @@ function GoalCard({
           </div>
         </div>
         <div className="flex items-center gap-1 ml-2 shrink-0">
+          <button
+            type="button"
+            onClick={openExtraForm}
+            className="px-2 py-1 rounded-md text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+            aria-label={`Add extra contribution to ${goal.name}`}
+          >
+            + Extra
+          </button>
           <button
             type="button"
             onClick={() => onEdit(goal)}
@@ -113,6 +245,140 @@ function GoalCard({
         Starting: {formatCurrency(goal.initialAmount)} | Monthly:{" "}
         {formatCurrency(goal.monthlyAmount)} | Rate: {goal.interestRate}%
       </div>
+
+      {/* Extra contribution inline form */}
+      <AnimatePresence>
+        {showExtraForm && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <form
+              onSubmit={handleAddContribution}
+              className="mb-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200 space-y-2"
+            >
+              <div className="text-xs font-semibold text-emerald-800 mb-1">
+                Add Extra Contribution
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs text-slate-500 mb-1">Amount ($)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={extraForm.amount}
+                    onChange={(e) => setExtraForm({ ...extraForm, amount: e.target.value })}
+                    className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm"
+                    placeholder="0.00"
+                    autoFocus
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500 mb-1">Date</label>
+                  <input
+                    type="date"
+                    value={extraForm.date}
+                    onChange={(e) => setExtraForm({ ...extraForm, date: e.target.value })}
+                    className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-500 mb-1">Note (optional)</label>
+                <input
+                  type="text"
+                  value={extraForm.note}
+                  onChange={(e) => setExtraForm({ ...extraForm, note: e.target.value })}
+                  className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm"
+                  placeholder="Bonus, gift, etc."
+                />
+              </div>
+              {extraError && (
+                <div className="text-xs text-red-600">{extraError}</div>
+              )}
+              <div className="flex gap-2 pt-0.5">
+                <button
+                  type="submit"
+                  disabled={extraSubmitting}
+                  className="flex-1 px-3 py-1.5 text-xs bg-emerald-700 text-white rounded-md hover:bg-emerald-800 transition-colors disabled:opacity-60"
+                >
+                  {extraSubmitting ? "Adding..." : "Add"}
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelExtraForm}
+                  className="flex-1 px-3 py-1.5 text-xs bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Past contributions */}
+      {contributions.length > 0 && (
+        <div className="mb-3">
+          <button
+            type="button"
+            onClick={() => setShowContributions((prev) => !prev)}
+            className="text-xs text-slate-500 hover:text-slate-700 font-medium transition-colors"
+          >
+            {showContributions
+              ? "Hide contributions"
+              : `${contributions.length} extra contribution${contributions.length !== 1 ? "s" : ""}`}
+          </button>
+          <AnimatePresence>
+            {showContributions && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden"
+              >
+                <div
+                  className="mt-2 space-y-1 max-h-40 overflow-y-auto pr-1"
+                  style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(0,0,0,0.15) transparent" }}
+                >
+                  {contributions.map((c) => (
+                    <div
+                      key={c.id}
+                      className="flex items-center justify-between gap-2 py-1 px-2 bg-slate-50 rounded text-xs"
+                    >
+                      <span className="text-slate-500 shrink-0">{formatDate(c.date)}</span>
+                      <span className="font-medium text-emerald-700 shrink-0">
+                        +{formatCurrency(c.amount)}
+                      </span>
+                      {c.note && (
+                        <span className="text-slate-400 truncate flex-1 text-center">{c.note}</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteContribution(c.id)}
+                        disabled={deletingContributionId === c.id}
+                        className="shrink-0 p-0.5 rounded text-slate-300 hover:text-red-500 transition-colors disabled:opacity-40"
+                        aria-label="Delete contribution"
+                      >
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* Breakdown toggle */}
       {yearlyBreakdown.length > 0 && (
@@ -482,6 +748,7 @@ export default function SavingsTracker() {
                 goal={goal}
                 onEdit={openEditForm}
                 onDelete={handleDelete}
+                onContributionAdded={loadGoals}
               />
             ))}
           </div>
