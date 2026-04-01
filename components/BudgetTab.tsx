@@ -74,6 +74,9 @@ export default function BudgetTab() {
 
         {/* 2. Recurring Income/Expenses (Core) */}
         <RecurringExpenses />
+
+        {/* 3. Savings Tracker */}
+        <SavingsTracker />
       </div>
 
       {showCsvModal && <CsvUploadModal onClose={() => setShowCsvModal(false)} />}
