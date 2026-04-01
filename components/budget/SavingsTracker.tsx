@@ -183,8 +183,8 @@ export default function SavingsTracker() {
       if (!res.ok) {
         throw new Error(`Failed to fetch savings: ${res.status}`);
       }
-      const json: SavingsGoal[] = await res.json();
-      setGoals(json);
+      const json = await res.json();
+      setGoals(Array.isArray(json) ? json : json.goals || []);
     } catch (err) {
       console.error("Error loading savings goals:", err);
       setError(err instanceof Error ? err.message : String(err));
