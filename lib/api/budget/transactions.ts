@@ -1,10 +1,5 @@
 // API client for budget transactions
 
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 export interface Transaction {
   id: string;
   userId: string;
@@ -43,12 +38,6 @@ export async function fetchTransactions(
   limit: number = 20,
   filter?: 'expense' | 'income'
 ): Promise<Transaction[]> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const params = new URLSearchParams();
   params.set('limit', limit.toString());
   if (filter) {
@@ -59,13 +48,11 @@ export async function fetchTransactions(
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
   if (!response.ok) {
     const error = await response.json();
-    console.error("[API Client] Error response:", error);
     throw new Error(error.error || 'Failed to fetch transactions');
   }
 
@@ -74,52 +61,28 @@ export async function fetchTransactions(
 }
 
 export async function createTransaction(transaction: NewTransaction): Promise<Transaction> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    console.error("[API Client] createTransaction - No user email found");
-    throw new Error('User not authenticated');
-  }
-
-  console.log("[API Client] Creating transaction:", {
-    userEmail,
-    transaction,
-  });
-
   const response = await fetch('/api/budget/transactions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(transaction),
   });
 
-  console.log("[API Client] createTransaction response status:", response.status, response.statusText);
-
   if (!response.ok) {
     const error = await response.json();
-    console.error("[API Client] createTransaction error:", error);
     throw new Error(error.error || 'Failed to create transaction');
   }
 
   const data = await response.json();
-  console.log("[API Client] createTransaction success:", data.transaction);
   return data.transaction;
 }
 
 export async function deleteTransaction(id: string): Promise<void> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/budget/transactions/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -128,4 +91,3 @@ export async function deleteTransaction(id: string): Promise<void> {
     throw new Error(error.error || 'Failed to delete transaction');
   }
 }
-

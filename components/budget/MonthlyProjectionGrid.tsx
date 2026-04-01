@@ -26,10 +26,6 @@ interface ProjectionData {
   months: MonthProjection[];
 }
 
-function getUserEmail(): string {
-  return (typeof window !== "undefined" ? sessionStorage.getItem("userEmail") : null) || "";
-}
-
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -191,7 +187,6 @@ export default function MonthlyProjectionGrid() {
       const res = await fetch(`/api/budget/projection?year=${currentYear}`, {
         headers: {
           "Content-Type": "application/json",
-          "x-user-email": getUserEmail(),
         },
       });
       if (!res.ok) {

@@ -1,10 +1,5 @@
 // API client for budget summary
 
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 export interface Summary {
   totalCurrent: number;
   totalIncome: number;
@@ -12,17 +7,10 @@ export interface Summary {
 }
 
 export async function fetchSummary(): Promise<Summary> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/budget/summary', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -34,9 +22,3 @@ export async function fetchSummary(): Promise<Summary> {
   const data = await response.json();
   return data;
 }
-
-
-
-
-
-

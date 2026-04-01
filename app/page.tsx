@@ -9,6 +9,7 @@ import { TrustSignals } from "@/components/landing/TrustSignals";
 import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
 import { AuthModal } from "@/components/AuthModal";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function Home() {
   const router = useRouter();
@@ -16,13 +17,11 @@ export default function Home() {
 
   useEffect(() => {
     // Check if user is authenticated
-    if (typeof window !== "undefined") {
-      const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-      
-      if (isAuthenticated === "true") {
-        router.push("/dashboard");
-        return;
-      }
+    const { isAuthenticated } = useAuthStore.getState();
+
+    if (isAuthenticated) {
+      router.push("/dashboard");
+      return;
     }
     setIsChecking(false);
   }, [router]);

@@ -1,10 +1,5 @@
 // API client for budget categories
 
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 export interface Category {
   id: string;
   userId: string;
@@ -21,17 +16,10 @@ export interface NewCategory {
 }
 
 export async function fetchCategories(): Promise<Category[]> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/budget/categories', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -45,17 +33,10 @@ export async function fetchCategories(): Promise<Category[]> {
 }
 
 export async function createCategory(category: NewCategory): Promise<Category> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/budget/categories', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(category),
   });
@@ -70,17 +51,10 @@ export async function createCategory(category: NewCategory): Promise<Category> {
 }
 
 export async function deleteCategory(categoryId: string): Promise<void> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/budget/categories/${categoryId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -89,4 +63,3 @@ export async function deleteCategory(categoryId: string): Promise<void> {
     throw new Error(error.error || 'Failed to delete category');
   }
 }
-

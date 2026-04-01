@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   // Route guard: redirect if already authenticated
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem("isAuthenticated") === "true";
+    const { isAuthenticated } = useAuthStore.getState();
     if (isAuthenticated) {
       router.push("/dashboard");
     }
@@ -33,31 +33,6 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // First check localStorage (development mode)
-      if (typeof window !== "undefined") {
-        const { getUserByEmail } = await import("@/lib/user-storage");
-        const storedUser = getUserByEmail(email);
-
-        if (storedUser) {
-          if (storedUser.password === password) {
-            // Login successful from localStorage
-            sessionStorage.setItem("userName", storedUser.name);
-            sessionStorage.setItem("userEmail", storedUser.email);
-            sessionStorage.setItem("isAuthenticated", "true");
-            router.push("/dashboard");
-            setIsLoading(false);
-            return;
-          } else {
-            // Password doesn't match
-            setError("Invalid email or password");
-            setIsLoading(false);
-            return;
-          }
-        }
-        // If user not found in localStorage, continue to API check
-      }
-
-      // If not found in localStorage, try API
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -77,11 +52,8 @@ export default function LoginPage() {
         return;
       }
 
-      // Login successful - save user info
+      // Login successful - httpOnly cookie is set by the API response automatically
       if (data.user) {
-        sessionStorage.setItem("userName", data.user.name);
-        sessionStorage.setItem("userEmail", data.user.email);
-        sessionStorage.setItem("isAuthenticated", "true");
         useAuthStore.getState().login(data.user.name, data.user.email);
       }
 
@@ -211,6 +183,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
-

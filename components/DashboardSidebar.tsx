@@ -35,15 +35,16 @@ export function DashboardSidebar({
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Clear the httpOnly cookie via API
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Continue with client-side logout even if API call fails
+    }
+
     // Clear auth state via Zustand store
     useAuthStore.getState().logout();
-
-    // Clear sessionStorage entries set during login
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("userEmail");
-    sessionStorage.removeItem("isAuthenticated");
-    sessionStorage.removeItem("auth-storage");
 
     // Call custom logout handler if provided
     if (onLogout) {
@@ -69,7 +70,7 @@ export function DashboardSidebar({
       <div className="p-6 border-b border-slate-200/50 bg-gradient-to-br from-slate-50 via-blue-50/30 to-white relative overflow-hidden">
         {/* Decorative gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5" />
-        
+
         <div className="flex items-center gap-3 mb-2 relative z-10">
           <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary via-blue-600 to-primary flex items-center justify-center text-white font-semibold text-lg shadow-lg relative overflow-hidden">
             <span className="relative z-10">{userName.charAt(0).toUpperCase()}</span>
@@ -118,7 +119,7 @@ export function DashboardSidebar({
                         ? "bg-blue-50 text-slate-900 font-medium pl-4 pr-3"
                         : "text-slate-700 pl-4 pr-3"
                     )}
-                    style={{ 
+                    style={{
                       paddingLeft: activePlanId === plan.id && activeSection === "loan" ? "calc(1rem - 4px)" : "1rem",
                     }}
                     aria-label={`Select plan: ${plan.name}`}
@@ -161,7 +162,7 @@ export function DashboardSidebar({
                     ? "bg-blue-50 text-slate-900 font-medium pl-4 pr-3"
                     : "text-slate-700 pl-4 pr-3"
                 )}
-                style={{ 
+                style={{
                   paddingLeft: activeSection === "budget" ? "calc(1rem - 4px)" : "1rem",
                 }}
                 aria-label="Budget Management"
@@ -250,4 +251,3 @@ export function DashboardSidebar({
     </>
   );
 }
-

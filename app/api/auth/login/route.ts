@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseAdmin } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
+import { verifyPassword } from "@/lib/auth/password";
+import { createSession } from "@/lib/auth/session";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, password } = body;
-
-    console.log("[LOGIN] 🔐 Attempting login for:", email);
 
     if (!email || !password) {
       return NextResponse.json(
@@ -16,88 +15,63 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createSupabaseAdmin();
-
-    // Try Supabase Auth first
-    console.log("[LOGIN] 🔍 Attempting Supabase Auth login...");
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    // Find user in database
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, email: true, name: true, password: true, emailVerified: true },
     });
 
-    if (authError) {
-      console.log("[LOGIN] ❌ Supabase Auth error:", authError.message);
-
-      if (authError.message.includes("Email not confirmed")) {
-        return NextResponse.json(
-          { error: "Please verify your email address first" },
-          { status: 403 }
-        );
-      }
-
-      if (authError.message.includes("Invalid login credentials")) {
-        return NextResponse.json(
-          { error: "Invalid email or password" },
-          { status: 401 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: "Login failed. Please try again." },
-        { status: 401 }
-      );
-    }
-
-    if (!authData.user) {
-      console.log("[LOGIN] ❌ No user returned from Supabase Auth");
+    if (!user) {
       return NextResponse.json(
         { error: "No account found with this email address" },
         { status: 404 }
       );
     }
 
-    console.log("[LOGIN] ✅ Supabase Auth login successful");
-
-    // Get user name: try Prisma first, fall back to Supabase metadata
-    let userName: string | null = null;
-    if (prisma) {
-      try {
-        const dbUser = await prisma.user.findUnique({
-          where: { email },
-          select: { name: true },
-        });
-        userName = dbUser?.name || null;
-      } catch (dbError) {
-        console.warn("[LOGIN] ⚠️ Could not fetch user name from database:", dbError);
-      }
-    }
-    // Fall back to Supabase Auth metadata if name not found in DB
-    if (!userName) {
-      userName = authData.user.user_metadata?.name || email.split("@")[0];
+    // User exists but has no password (e.g. migrated from OAuth-only)
+    if (!user.password) {
+      return NextResponse.json(
+        { error: "Please reset your password" },
+        { status: 401 }
+      );
     }
 
-    // Login successful
-    return NextResponse.json({
+    // Verify password
+    const isValid = await verifyPassword(password, user.password);
+    if (!isValid) {
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    // Check email verification
+    if (!user.emailVerified) {
+      return NextResponse.json(
+        { error: "Please verify your email address first" },
+        { status: 403 }
+      );
+    }
+
+    // Create response and set auth cookie
+    const response = NextResponse.json({
       success: true,
       message: "Login successful",
       user: {
-        email: authData.user.email!,
-        name: userName,
-        id: authData.user.id,
+        id: user.id,
+        email: user.email,
+        name: user.name || email.split("@")[0],
       },
     });
-  } catch (error: any) {
-    console.error("[LOGIN] ❌ Unexpected error:", error?.message || error);
-    console.error("[LOGIN] ❌ Stack:", error?.stack);
-    console.error("[LOGIN] ❌ Cause:", error?.cause?.message || error?.cause);
+
+    await createSession(response, { id: user.id, email: user.email });
+
+    return response;
+  } catch (error) {
+    console.error("[LOGIN] Unexpected error:", error);
     return NextResponse.json(
-      { error: "Bir hata oluştu. Lütfen tekrar deneyin.", detail: error?.message || String(error) },
+      { error: "An error occurred. Please try again." },
       { status: 500 }
     );
   }
 }
-
-
-
-
-

@@ -1,10 +1,5 @@
 // API client for savings goals
 
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 export interface YearlyBreakdown {
   year: number;
   balance: number;
@@ -47,17 +42,10 @@ export interface UpdateSavingsGoal {
 }
 
 export async function fetchSavingsGoals(): Promise<SavingsGoal[]> {
-  const userEmail = getUserEmail();
-
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/budget/savings', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -71,17 +59,10 @@ export async function fetchSavingsGoals(): Promise<SavingsGoal[]> {
 }
 
 export async function createSavingsGoal(goal: NewSavingsGoal): Promise<SavingsGoal> {
-  const userEmail = getUserEmail();
-
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/budget/savings', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(goal),
   });
@@ -96,17 +77,10 @@ export async function createSavingsGoal(goal: NewSavingsGoal): Promise<SavingsGo
 }
 
 export async function updateSavingsGoal(id: string, goal: UpdateSavingsGoal): Promise<SavingsGoal> {
-  const userEmail = getUserEmail();
-
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/budget/savings/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(goal),
   });
@@ -121,17 +95,10 @@ export async function updateSavingsGoal(id: string, goal: UpdateSavingsGoal): Pr
 }
 
 export async function deleteSavingsGoal(id: string): Promise<void> {
-  const userEmail = getUserEmail();
-
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/budget/savings/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 

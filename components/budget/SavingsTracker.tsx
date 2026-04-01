@@ -51,10 +51,6 @@ interface ExtraContributionForm {
   note: string;
 }
 
-function getUserEmail(): string {
-  return (typeof window !== "undefined" ? sessionStorage.getItem("userEmail") : null) || "";
-}
-
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -147,7 +143,6 @@ function GoalCard({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-email": getUserEmail(),
         },
         body: JSON.stringify({
           amount,
@@ -180,8 +175,7 @@ function GoalCard({
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "x-user-email": getUserEmail(),
-          },
+            },
         }
       );
       if (!res.ok) {
@@ -452,7 +446,6 @@ export default function SavingsTracker() {
       const res = await fetch("/api/budget/savings", {
         headers: {
           "Content-Type": "application/json",
-          "x-user-email": getUserEmail(),
         },
       });
       if (!res.ok) {
@@ -519,7 +512,6 @@ export default function SavingsTracker() {
         method,
         headers: {
           "Content-Type": "application/json",
-          "x-user-email": getUserEmail(),
         },
         body: JSON.stringify(form),
       });
@@ -550,7 +542,6 @@ export default function SavingsTracker() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "x-user-email": getUserEmail(),
         },
       });
       if (!res.ok) {

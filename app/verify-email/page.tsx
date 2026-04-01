@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Mail, ArrowRight, CheckCircle, ArrowLeft, Copy, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function VerifyEmailPage() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -19,21 +20,21 @@ export default function VerifyEmailPage() {
   const [error, setError] = useState<string>("");
   const router = useRouter();
 
-  // Get email from sessionStorage and load dev code if available
+  // Get email and verification data from Zustand store
   useEffect(() => {
-    const storedEmail = sessionStorage.getItem("verificationEmail");
-    const devCode = sessionStorage.getItem("devVerificationCode");
-    const emailWasSent = sessionStorage.getItem("emailSent") === "true";
-    
+    const state = useAuthStore.getState();
+    const storedEmail = state.verificationEmail;
+    const devCode = state.devVerificationCode;
+    const emailWasSent = state.emailSent;
+
     if (storedEmail) {
       setEmail(storedEmail);
     }
-    
+
     // Only show demo code if email was NOT sent (fallback mode)
     if (!emailWasSent && devCode) {
       setDemoCode(devCode);
     }
-    // Don't set demoCode if email was successfully sent
   }, []);
 
   const handleCodeChange = (index: number, value: string) => {
@@ -41,7 +42,7 @@ export default function VerifyEmailPage() {
     if (value.length > 1) return;
     // Only allow numbers
     if (value && !/^\d$/.test(value)) return;
-    
+
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
@@ -57,7 +58,7 @@ export default function VerifyEmailPage() {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 6);
     const digits = pastedData.split("").filter((char) => /^\d$/.test(char));
-    
+
     if (digits.length === 6) {
       setCode(digits);
       // Focus last input
@@ -76,24 +77,25 @@ export default function VerifyEmailPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const verificationCode = code.join("");
-    
+
     if (verificationCode.length !== 6) return;
 
     setIsLoading(true);
     setError("");
 
     try {
-      const emailToVerify = email || sessionStorage.getItem("verificationEmail") || "";
-      
+      const state = useAuthStore.getState();
+      const emailToVerify = email || state.verificationEmail || "";
+
       if (!emailToVerify) {
         setError("Email not found. Please sign up again.");
         setIsLoading(false);
         return;
       }
 
-      // Get stored code from sessionStorage (for serverless environments)
-      const storedCode = sessionStorage.getItem("devVerificationCode");
-      const storedCodeExpiresAt = sessionStorage.getItem("codeExpiresAt");
+      // Get stored code from Zustand store (for serverless environments)
+      const storedCode = state.devVerificationCode;
+      const storedCodeExpiresAt = state.codeExpiresAt;
 
       const response = await fetch("/api/auth/verify-email", {
         method: "POST",
@@ -120,16 +122,13 @@ export default function VerifyEmailPage() {
       setIsVerified(true);
       setIsLoading(false);
 
-      // Save user info to sessionStorage for dashboard
+      // Login via Zustand store - httpOnly cookie is set by API response
       if (data.user) {
-        sessionStorage.setItem("userName", data.user.name);
-        sessionStorage.setItem("userEmail", data.user.email);
-        sessionStorage.setItem("isAuthenticated", "true");
+        useAuthStore.getState().login(data.user.name, data.user.email);
       }
 
       // Clear verification data
-      sessionStorage.removeItem("verificationEmail");
-      sessionStorage.removeItem("devVerificationCode");
+      useAuthStore.getState().clearVerificationData();
 
       // Navigate to dashboard after verification (shorter delay)
       setTimeout(() => {
@@ -148,13 +147,15 @@ export default function VerifyEmailPage() {
     setIsLoading(true);
 
     try {
+      const state = useAuthStore.getState();
+
       const response = await fetch("/api/auth/resend-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email || sessionStorage.getItem("verificationEmail"),
+          email: email || state.verificationEmail,
         }),
       });
 
@@ -166,18 +167,22 @@ export default function VerifyEmailPage() {
         return;
       }
 
-      // Update stored code for client-side verification (only if email failed)
+      // Update stored code in Zustand (only if email failed)
       if (!data.emailSent && data.verificationCode) {
-        sessionStorage.setItem("devVerificationCode", data.verificationCode);
+        useAuthStore.getState().setVerificationData(
+          email || state.verificationEmail || "",
+          data.verificationCode,
+          data.codeExpiresAt,
+          data.emailSent,
+        );
         setDemoCode(data.verificationCode);
-      }
-      if (!data.emailSent && data.codeExpiresAt) {
-        sessionStorage.setItem("codeExpiresAt", data.codeExpiresAt.toString());
-      }
-      
-      // Update emailSent flag
-      if (data.emailSent !== undefined) {
-        sessionStorage.setItem("emailSent", data.emailSent ? "true" : "false");
+      } else {
+        useAuthStore.getState().setVerificationData(
+          email || state.verificationEmail || "",
+          undefined,
+          undefined,
+          data.emailSent,
+        );
       }
 
       setIsLoading(false);
@@ -252,7 +257,7 @@ export default function VerifyEmailPage() {
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-blue-900 mb-1">
-                    ⚠️ Email Not Sent - Verification Code
+                    Warning: Email Not Sent - Verification Code
                   </p>
                   <p className="text-xs text-blue-700">
                     Email sending failed. Use this code: <strong className="font-mono text-base">{demoCode}</strong>
@@ -294,7 +299,7 @@ export default function VerifyEmailPage() {
                 <Label className="text-sm font-medium text-slate-700 text-center block">
                   Verification Code
                 </Label>
-                <div 
+                <div
                   className="flex gap-2 justify-center"
                   onPaste={handlePaste}
                 >
@@ -363,9 +368,3 @@ export default function VerifyEmailPage() {
     </div>
   );
 }
-
-
-
-
-
-

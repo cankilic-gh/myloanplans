@@ -1,10 +1,5 @@
 // API client for recurring expenses
 
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 export type Frequency = 'weekly_2' | 'monthly' | 'semiannual' | 'yearly';
 
 export interface RecurringExpense {
@@ -16,7 +11,7 @@ export interface RecurringExpense {
   frequency: Frequency;
   description: string | null;
   categoryId: string | null;
-  accountId: string | null; // Made optional to match schema
+  accountId: string | null;
   nextDueDate: string;
   createdAt: string;
   category?: {
@@ -43,7 +38,7 @@ export interface NewRecurringExpense {
 
 export function calculateNextDueDate(currentDate: string, frequency: Frequency): string {
   const date = new Date(currentDate);
-  
+
   switch (frequency) {
     case 'weekly_2':
       date.setDate(date.getDate() + 14);
@@ -58,19 +53,13 @@ export function calculateNextDueDate(currentDate: string, frequency: Frequency):
       date.setFullYear(date.getFullYear() + 1);
       break;
   }
-  
+
   return date.toISOString().slice(0, 10);
 }
 
 export async function fetchRecurringExpenses(
   type?: 'expense' | 'income'
 ): Promise<RecurringExpense[]> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const params = new URLSearchParams();
   if (type) {
     params.set('type', type);
@@ -80,7 +69,6 @@ export async function fetchRecurringExpenses(
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -96,17 +84,10 @@ export async function fetchRecurringExpenses(
 export async function createRecurringExpense(
   expense: NewRecurringExpense
 ): Promise<RecurringExpense> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/budget/recurring', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(expense),
   });
@@ -124,17 +105,10 @@ export async function updateRecurringExpense(
   id: string,
   updates: Partial<NewRecurringExpense>
 ): Promise<RecurringExpense> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/budget/recurring/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(updates),
   });
@@ -149,17 +123,10 @@ export async function updateRecurringExpense(
 }
 
 export async function deleteRecurringExpense(id: string): Promise<void> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/budget/recurring/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 

@@ -1,10 +1,5 @@
 // API client for budget projection
 
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 export interface ProjectionMonth {
   month: number;
   year: number;
@@ -28,12 +23,6 @@ export interface ProjectionData {
 }
 
 export async function fetchProjection(year?: number): Promise<ProjectionData> {
-  const userEmail = getUserEmail();
-
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const params = new URLSearchParams();
   if (year) {
     params.set('year', String(year));
@@ -45,7 +34,6 @@ export async function fetchProjection(year?: number): Promise<ProjectionData> {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 

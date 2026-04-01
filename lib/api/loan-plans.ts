@@ -20,25 +20,12 @@ export interface LoanPlan extends LoanPlanData {
   updatedAt: string;
 }
 
-// Helper to get user email from session
-function getUserEmail(): string | null {
-  if (typeof window === 'undefined') return null;
-  return sessionStorage.getItem('userEmail');
-}
-
 // Fetch all loan plans for the authenticated user
 export async function fetchLoanPlans(): Promise<LoanPlan[]> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/loan-plans', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -53,17 +40,10 @@ export async function fetchLoanPlans(): Promise<LoanPlan[]> {
 
 // Create a new loan plan
 export async function createLoanPlan(planData: LoanPlanData): Promise<LoanPlan> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch('/api/loan-plans', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(planData),
   });
@@ -79,17 +59,10 @@ export async function createLoanPlan(planData: LoanPlanData): Promise<LoanPlan> 
 
 // Update an existing loan plan
 export async function updateLoanPlan(id: string, planData: Partial<LoanPlanData>): Promise<LoanPlan> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/loan-plans/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
     body: JSON.stringify(planData),
   });
@@ -105,17 +78,10 @@ export async function updateLoanPlan(id: string, planData: Partial<LoanPlanData>
 
 // Delete a loan plan
 export async function deleteLoanPlan(id: string): Promise<void> {
-  const userEmail = getUserEmail();
-  
-  if (!userEmail) {
-    throw new Error('User not authenticated');
-  }
-
   const response = await fetch(`/api/loan-plans/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'x-user-email': userEmail,
     },
   });
 
@@ -124,9 +90,3 @@ export async function deleteLoanPlan(id: string): Promise<void> {
     throw new Error(error.error || 'Failed to delete loan plan');
   }
 }
-
-
-
-
-
-

@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function SignUpPage() {
 
   // Route guard: redirect if already authenticated
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem("isAuthenticated") === "true";
+    const { isAuthenticated } = useAuthStore.getState();
     if (isAuthenticated) {
       router.push("/dashboard");
     }
@@ -58,11 +59,11 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
+
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -84,31 +85,13 @@ export default function SignUpPage() {
         return;
       }
 
-      // Store email and name for verification page
-      sessionStorage.setItem("verificationEmail", formData.email);
-      sessionStorage.setItem("userName", formData.name);
-      sessionStorage.setItem("userEmail", formData.email);
-      
-      // Store emailSent flag
-      sessionStorage.setItem("emailSent", data.emailSent ? "true" : "false");
-      
-      // Only store code if email sending failed (for fallback)
-      if (!data.emailSent && data.verificationCode) {
-        sessionStorage.setItem("devVerificationCode", data.verificationCode);
-      }
-      if (!data.emailSent && data.codeExpiresAt) {
-        sessionStorage.setItem("codeExpiresAt", data.codeExpiresAt.toString());
-      }
-
-      // Store user credentials in localStorage (development only)
-      if (data.user && typeof window !== "undefined") {
-        const { saveUserCredentials } = await import("@/lib/user-storage");
-        saveUserCredentials({
-          email: data.user.email,
-          name: data.user.name,
-          password: data.user.password,
-        });
-      }
+      // Store verification data in Zustand store
+      useAuthStore.getState().setVerificationData(
+        formData.email,
+        !data.emailSent ? data.verificationCode : undefined,
+        !data.emailSent ? data.codeExpiresAt : undefined,
+        data.emailSent,
+      );
 
       // Navigate to email verification
       router.push("/verify-email");
@@ -300,6 +283,3 @@ export default function SignUpPage() {
     </div>
   );
 }
-
-
-

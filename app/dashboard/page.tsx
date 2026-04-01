@@ -7,6 +7,7 @@ import BudgetTab from "@/components/BudgetTab";
 import { saveUserData, loadUserData } from "@/lib/storage";
 import { fetchLoanPlans } from "@/lib/api/loan-plans";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useRouter } from "next/navigation";
 import type { LoanPlan } from "@/lib/types/loan";
 
 const initialPlans: LoanPlan[] = [];
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const [plans, setPlans] = useState<LoanPlan[]>(initialPlans);
   const [activePlanId, setActivePlanId] = useState<string | null>(initialPlans[0]?.id || null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   // Auth state from Zustand store
   const {
@@ -26,36 +28,26 @@ export default function DashboardPage() {
     isGuest,
     userName: authUserName,
     userEmail: authUserEmail,
+    initialized,
     loginAsGuest,
   } = useAuthStore();
 
   const userName = authUserName || "Guest User";
   const userEmail = authUserEmail || "guest@local";
 
-  // Check authentication - allow guest mode, but wait for hydration
-  const [hydrated, setHydrated] = useState(false);
+  // Initialize auth on mount - check JWT cookie via /api/auth/me
   useEffect(() => {
-    // Wait a tick for Zustand to hydrate from sessionStorage
-    const timer = setTimeout(() => setHydrated(true), 50);
-    return () => clearTimeout(timer);
+    useAuthStore.getState().initialize();
   }, []);
 
+  // After initialization, if not authenticated and not guest, redirect to login
   useEffect(() => {
-    if (!hydrated) return;
-    if (typeof window !== "undefined") {
-      if (!isAuthenticated && !isGuest) {
-        // Check if sessionStorage has auth data (from login page)
-        const storedEmail = sessionStorage.getItem("userEmail");
-        const storedName = sessionStorage.getItem("userName");
-        if (storedEmail && storedEmail !== "guest@local") {
-          // User logged in via login page but Zustand didn't hydrate — sync it
-          useAuthStore.getState().login(storedName || "User", storedEmail);
-        } else {
-          loginAsGuest();
-        }
-      }
+    if (!initialized) return;
+    if (!isAuthenticated && !isGuest) {
+      // Not logged in via cookie and not guest - default to guest mode
+      loginAsGuest();
     }
-  }, [hydrated, isAuthenticated, isGuest, loginAsGuest]);
+  }, [initialized, isAuthenticated, isGuest, loginAsGuest]);
 
   // Load user info and loan plans from API or localStorage (guest mode)
   useEffect(() => {
@@ -161,8 +153,10 @@ export default function DashboardPage() {
       }
     }
 
-    loadData();
-  }, [isGuest, userEmail]);
+    if (initialized && (isAuthenticated || isGuest)) {
+      loadData();
+    }
+  }, [initialized, isGuest, isAuthenticated, userEmail]);
 
   const handleAddNewPlan = () => {
     const newPlan: LoanPlan = {
@@ -215,8 +209,8 @@ export default function DashboardPage() {
             const formattedPlans: LoanPlan[] = apiPlans.map(plan => ({
               id: plan.id,
               name: plan.name,
-              createdAt: typeof plan.createdAt === 'string' 
-                ? plan.createdAt.split("T")[0] 
+              createdAt: typeof plan.createdAt === 'string'
+                ? plan.createdAt.split("T")[0]
                 : new Date(plan.createdAt).toISOString().split("T")[0],
             }));
             setPlans(formattedPlans);
@@ -244,7 +238,7 @@ export default function DashboardPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !initialized) {
     return (
       <DashboardLayout
         plans={plans}
