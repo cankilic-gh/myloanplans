@@ -32,16 +32,30 @@ export default function DashboardPage() {
   const userName = authUserName || "Guest User";
   const userEmail = authUserEmail || "guest@local";
 
-  // Check authentication - allow guest mode
+  // Check authentication - allow guest mode, but wait for hydration
+  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
+    // Wait a tick for Zustand to hydrate from sessionStorage
+    const timer = setTimeout(() => setHydrated(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     if (typeof window !== "undefined") {
-      // Allow guest mode without redirecting to login
       if (!isAuthenticated && !isGuest) {
-        // Set guest mode automatically for first-time visitors
-        loginAsGuest();
+        // Check if sessionStorage has auth data (from login page)
+        const storedEmail = sessionStorage.getItem("userEmail");
+        const storedName = sessionStorage.getItem("userName");
+        if (storedEmail && storedEmail !== "guest@local") {
+          // User logged in via login page but Zustand didn't hydrate — sync it
+          useAuthStore.getState().login(storedName || "User", storedEmail);
+        } else {
+          loginAsGuest();
+        }
       }
     }
-  }, [isAuthenticated, isGuest, loginAsGuest]);
+  }, [hydrated, isAuthenticated, isGuest, loginAsGuest]);
 
   // Load user info and loan plans from API or localStorage (guest mode)
   useEffect(() => {
