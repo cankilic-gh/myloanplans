@@ -27,20 +27,23 @@ export async function POST(request: NextRequest) {
 
     if (authError) {
       console.log("[LOGIN] ❌ Supabase Auth error:", authError.message);
-      
-      // Check if it's a user not found error
-      if (authError.message.includes("Invalid login credentials") || 
-          authError.message.includes("Email not confirmed") ||
-          authError.message.includes("User not found")) {
+
+      if (authError.message.includes("Email not confirmed")) {
         return NextResponse.json(
-          { error: "No account found with this email address" },
-          { status: 404 }
+          { error: "Please verify your email address first" },
+          { status: 403 }
         );
       }
 
-      // For other errors, return generic error
+      if (authError.message.includes("Invalid login credentials")) {
+        return NextResponse.json(
+          { error: "Invalid email or password" },
+          { status: 401 }
+        );
+      }
+
       return NextResponse.json(
-        { error: "Incorrect password" },
+        { error: "Login failed. Please try again." },
         { status: 401 }
       );
     }
