@@ -89,6 +89,17 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    // Fetch savings goals for the user
+    const savingsGoals = await prisma.savingsGoal.findMany({
+      where: { userId },
+    });
+
+    // Sum monthly savings contributions
+    const monthlySavings = savingsGoals.reduce(
+      (sum, g) => sum + (g.monthlyAmount ?? 0),
+      0
+    );
+
     // Separate income and expenses
     const recurringIncomeItems = recurringItems.filter((r) => r.type === "income");
     const recurringExpenseItems = recurringItems.filter((r) => r.type === "expense");
@@ -165,8 +176,9 @@ export async function GET(request: NextRequest) {
 
       const oneOffIncome = oneOffByMonth[month].income;
       const oneOffExpense = oneOffByMonth[month].expense;
+      const savingsExpense = monthlySavings;
 
-      const monthNet = recurringIncome - recurringExpense + oneOffIncome - oneOffExpense;
+      const monthNet = recurringIncome - recurringExpense - savingsExpense + oneOffIncome - oneOffExpense;
       runningBalance += monthNet;
 
       months.push({
@@ -174,6 +186,7 @@ export async function GET(request: NextRequest) {
         year,
         recurringIncome: Math.round(recurringIncome * 100) / 100,
         recurringExpense: Math.round(recurringExpense * 100) / 100,
+        savingsExpense: Math.round(savingsExpense * 100) / 100,
         oneOffIncome: Math.round(oneOffIncome * 100) / 100,
         oneOffExpense: Math.round(oneOffExpense * 100) / 100,
         monthNet: Math.round(monthNet * 100) / 100,
@@ -181,9 +194,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const monthlyNet = monthlyRecurringIncome - monthlyRecurringExpense;
+    const monthlyNet = monthlyRecurringIncome - monthlyRecurringExpense - monthlySavings;
     const yearlyIncome = monthlyRecurringIncome * 12;
-    const yearlyExpense = monthlyRecurringExpense * 12;
+    const yearlyExpense = monthlyRecurringExpense * 12 + monthlySavings * 12;
 
     // Year-end balance includes recurring net + all one-off transactions
     const totalOneOffNet = oneOffTransactions.reduce((sum, tx) => {
@@ -196,6 +209,7 @@ export async function GET(request: NextRequest) {
       year,
       monthlyRecurringIncome: Math.round(monthlyRecurringIncome * 100) / 100,
       monthlyRecurringExpense: Math.round(monthlyRecurringExpense * 100) / 100,
+      monthlySavings: Math.round(monthlySavings * 100) / 100,
       monthlyNet: Math.round(monthlyNet * 100) / 100,
       yearlyIncome: Math.round(yearlyIncome * 100) / 100,
       yearlyExpense: Math.round(yearlyExpense * 100) / 100,

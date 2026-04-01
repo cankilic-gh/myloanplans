@@ -55,13 +55,6 @@ export async function fetchTransactions(
     params.set('filter', filter);
   }
 
-  console.log("[API Client] Fetching transactions:", {
-    url: `/api/budget/transactions?${params.toString()}`,
-    userEmail,
-    limit,
-    filter,
-  });
-
   const response = await fetch(`/api/budget/transactions?${params.toString()}`, {
     method: 'GET',
     headers: {
@@ -70,8 +63,6 @@ export async function fetchTransactions(
     },
   });
 
-  console.log("[API Client] Response status:", response.status, response.statusText);
-
   if (!response.ok) {
     const error = await response.json();
     console.error("[API Client] Error response:", error);
@@ -79,10 +70,6 @@ export async function fetchTransactions(
   }
 
   const data = await response.json();
-  console.log("[API Client] Response data:", {
-    transactionCount: data.transactions?.length || 0,
-    transactions: data.transactions,
-  });
   return data.transactions || [];
 }
 
