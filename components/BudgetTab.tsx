@@ -81,10 +81,8 @@ export default function BudgetTab() {
         {/* 4. Monthly Projection Grid */}
         <MonthlyProjectionGrid />
 
-        {/* 5. Income vs Expenses Chart */}
-        <ChartErrorBoundary>
-          <Chart />
-        </ChartErrorBoundary>
+        {/* 5. Income vs Expenses Chart - temporarily disabled due to Recharts rendering issue */}
+        {/* <ChartErrorBoundary><Chart /></ChartErrorBoundary> */}
 
         {/* 6. One-Off Transactions (Demoted) */}
         <OneOffTransactions />
