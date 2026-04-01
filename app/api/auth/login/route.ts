@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     console.log("[LOGIN] ✅ Supabase Auth login successful");
 
-    // Get user metadata from Prisma database (for name and other data)
+    // Get user name: try Prisma first, fall back to Supabase metadata
     let userName: string | null = null;
     if (prisma) {
       try {
@@ -69,12 +69,11 @@ export async function POST(request: NextRequest) {
         userName = dbUser?.name || null;
       } catch (dbError) {
         console.warn("[LOGIN] ⚠️ Could not fetch user name from database:", dbError);
-        // Use metadata from Supabase if available
-        userName = authData.user.user_metadata?.name || null;
       }
-    } else {
-      // Use metadata from Supabase if Prisma is not available
-      userName = authData.user.user_metadata?.name || null;
+    }
+    // Fall back to Supabase Auth metadata if name not found in DB
+    if (!userName) {
+      userName = authData.user.user_metadata?.name || email.split("@")[0];
     }
 
     // Login successful
