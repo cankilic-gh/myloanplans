@@ -149,12 +149,12 @@ export async function GET(request: NextRequest) {
           {
             OR: [
               { source: { not: "recurring" } },
-              { source: null },
+              { source: { equals: null as unknown as undefined } },
             ],
           },
           {
             OR: [
-              { note: null },
+              { note: { equals: null as unknown as undefined } },
               { note: { not: { startsWith: "Recurring:" } } },
             ],
           },
