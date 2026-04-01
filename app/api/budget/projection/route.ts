@@ -145,10 +145,20 @@ export async function GET(request: NextRequest) {
           gte: startOfYear,
           lte: endOfYear,
         },
-        source: { not: "recurring" },
-        NOT: {
-          note: { startsWith: "Recurring:" },
-        },
+        AND: [
+          {
+            OR: [
+              { source: { not: "recurring" } },
+              { source: null },
+            ],
+          },
+          {
+            OR: [
+              { note: null },
+              { note: { not: { startsWith: "Recurring:" } } },
+            ],
+          },
+        ],
       },
       select: {
         amount: true,
@@ -215,15 +225,21 @@ export async function GET(request: NextRequest) {
     }
 
     const monthlyNet = monthlyRecurringIncome - monthlyRecurringExpense - monthlySavings;
-    const yearlyIncome = monthlyRecurringIncome * 12;
-    const yearlyExpense = monthlyRecurringExpense * 12 + monthlySavings * 12;
 
-    // Year-end balance includes recurring net + all one-off transactions
-    const totalOneOffNet = oneOffTransactions.reduce((sum, tx) => {
-      if (tx.category?.type === "INCOME") return sum + tx.amount;
-      return sum - tx.amount;
-    }, 0);
-    const yearEndBalance = monthlyNet * 12 + totalOneOffNet;
+    // Sum one-off income and expenses for the year
+    let totalOneOffIncome = 0;
+    let totalOneOffExpense = 0;
+    for (const tx of oneOffTransactions) {
+      if (tx.category?.type === "INCOME") {
+        totalOneOffIncome += tx.amount;
+      } else {
+        totalOneOffExpense += Math.abs(tx.amount);
+      }
+    }
+
+    const yearlyIncome = monthlyRecurringIncome * 12 + totalOneOffIncome;
+    const yearlyExpense = monthlyRecurringExpense * 12 + monthlySavings * 12 + totalOneOffExpense;
+    const yearEndBalance = yearlyIncome - yearlyExpense;
 
     return NextResponse.json({
       year,
