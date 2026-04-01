@@ -80,15 +80,6 @@ export default function BudgetTab() {
 
         {/* 4. Monthly Projection Grid */}
         <MonthlyProjectionGrid />
-
-        {/* 5. Income vs Expenses Chart - temporarily disabled due to Recharts rendering issue */}
-        {/* <ChartErrorBoundary><Chart /></ChartErrorBoundary> */}
-
-        {/* 6. One-Off Transactions (Demoted) */}
-        <OneOffTransactions />
-
-        {/* 7. Categories */}
-        <CategoriesList />
       </div>
 
       {showCsvModal && <CsvUploadModal onClose={() => setShowCsvModal(false)} />}
