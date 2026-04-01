@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import YearlyProjectionCards from "@/components/budget/YearlyProjectionCards";
 import RecurringExpenses from "@/components/budget/RecurringExpenses";
@@ -8,6 +8,29 @@ import SavingsTracker from "@/components/budget/SavingsTracker";
 import MonthlyProjectionGrid from "@/components/budget/MonthlyProjectionGrid";
 import Chart from "@/components/budget/Chart";
 import OneOffTransactions from "@/components/budget/OneOffTransactions";
+
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="bg-white rounded-lg border border-slate-200 p-6 text-center text-sm text-slate-400">
+          Chart could not be loaded.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import CategoriesList from "@/components/budget/CategoriesList";
 import CsvUploadModal from "@/components/budget/CsvUploadModal";
 
@@ -59,7 +82,9 @@ export default function BudgetTab() {
         <MonthlyProjectionGrid />
 
         {/* 5. Income vs Expenses Chart */}
-        <Chart />
+        <ChartErrorBoundary>
+          <Chart />
+        </ChartErrorBoundary>
 
         {/* 6. One-Off Transactions (Demoted) */}
         <OneOffTransactions />

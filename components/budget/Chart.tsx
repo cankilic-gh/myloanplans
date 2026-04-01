@@ -321,7 +321,7 @@ export default function Chart() {
               return category ? category.name : value;
             }}
           />
-          {categories.map((category) => {
+          {Array.isArray(categories) && categories.map((category) => {
             const maxAmount = categoryColorMap.get(category.id) || 1;
             return (
               <Bar
@@ -330,7 +330,7 @@ export default function Chart() {
                 stackId="a"
                 name={category.name}
               >
-                {chartData.map((entry, index) => {
+                {Array.isArray(chartData) && chartData.map((entry, index) => {
                   const amount = entry[category.id] as number || 0;
                   const color = getColorForAmount(
                     category.type as "INCOME" | "EXPENSE",
