@@ -8,23 +8,30 @@ interface YearlyBreakdown {
   balance: number;
 }
 
+interface SavingsProjections {
+  yearlyBreakdown: YearlyBreakdown[];
+  totalContributions: number;
+  totalInterest: number;
+  finalBalance: number;
+}
+
 interface SavingsGoal {
   id: string;
   name: string;
   initialAmount: number;
-  monthlyContribution: number;
-  annualInterestRate: number;
+  monthlyAmount: number;
+  interestRate: number;
   projectionYears: number;
-  yearlyBreakdown: YearlyBreakdown[];
-  finalBalance: number;
+  projections?: SavingsProjections;
   createdAt: string;
+  updatedAt?: string;
 }
 
 interface SavingsGoalFormData {
   name: string;
   initialAmount: number;
-  monthlyContribution: number;
-  annualInterestRate: number;
+  monthlyAmount: number;
+  interestRate: number;
   projectionYears: number;
 }
 
@@ -43,8 +50,8 @@ const formatCurrency = (amount: number): string => {
 const emptyForm: SavingsGoalFormData = {
   name: "",
   initialAmount: 0,
-  monthlyContribution: 0,
-  annualInterestRate: 0,
+  monthlyAmount: 0,
+  interestRate: 0,
   projectionYears: 5,
 };
 
@@ -58,10 +65,12 @@ function GoalCard({
   onDelete: (id: string) => void;
 }) {
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const yearlyBreakdown = goal.projections?.yearlyBreakdown || [];
+  const finalBalance = goal.projections?.finalBalance || 0;
   const maxBalance =
-    goal.yearlyBreakdown.length > 0
-      ? Math.max(...goal.yearlyBreakdown.map((y) => y.balance))
-      : goal.finalBalance;
+    yearlyBreakdown.length > 0
+      ? Math.max(...yearlyBreakdown.map((y) => y.balance))
+      : finalBalance;
 
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg">
@@ -72,7 +81,7 @@ function GoalCard({
             {goal.name}
           </h3>
           <div className="text-lg font-bold text-emerald-600 mt-1">
-            In {goal.projectionYears} years: {formatCurrency(goal.finalBalance)}
+            In {goal.projectionYears} years: {formatCurrency(finalBalance)}
           </div>
         </div>
         <div className="flex items-center gap-1 ml-2 shrink-0">
@@ -102,11 +111,11 @@ function GoalCard({
       {/* Details */}
       <div className="text-xs text-slate-500 mb-3">
         Starting: {formatCurrency(goal.initialAmount)} | Monthly:{" "}
-        {formatCurrency(goal.monthlyContribution)} | Rate: {goal.annualInterestRate}%
+        {formatCurrency(goal.monthlyAmount)} | Rate: {goal.interestRate}%
       </div>
 
       {/* Breakdown toggle */}
-      {goal.yearlyBreakdown.length > 0 && (
+      {yearlyBreakdown.length > 0 && (
         <>
           <button
             type="button"
@@ -126,7 +135,7 @@ function GoalCard({
                 className="overflow-hidden"
               >
                 <div className="mt-3 space-y-2">
-                  {goal.yearlyBreakdown.map((yb) => {
+                  {yearlyBreakdown.map((yb) => {
                     const barWidth =
                       maxBalance > 0
                         ? Math.max((yb.balance / maxBalance) * 100, 4)
@@ -209,8 +218,8 @@ export default function SavingsTracker() {
     setForm({
       name: goal.name,
       initialAmount: goal.initialAmount,
-      monthlyContribution: goal.monthlyContribution,
-      annualInterestRate: goal.annualInterestRate,
+      monthlyAmount: goal.monthlyAmount,
+      interestRate: goal.interestRate,
       projectionYears: goal.projectionYears,
     });
     setFormError(null);
@@ -366,11 +375,11 @@ export default function SavingsTracker() {
                       type="number"
                       step="0.01"
                       min="0"
-                      value={form.monthlyContribution || ""}
+                      value={form.monthlyAmount || ""}
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          monthlyContribution: parseFloat(e.target.value) || 0,
+                          monthlyAmount: parseFloat(e.target.value) || 0,
                         })
                       }
                       className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
@@ -389,11 +398,11 @@ export default function SavingsTracker() {
                       step="0.1"
                       min="0"
                       max="100"
-                      value={form.annualInterestRate || ""}
+                      value={form.interestRate || ""}
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          annualInterestRate: parseFloat(e.target.value) || 0,
+                          interestRate: parseFloat(e.target.value) || 0,
                         })
                       }
                       className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
