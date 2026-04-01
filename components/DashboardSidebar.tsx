@@ -39,6 +39,12 @@ export function DashboardSidebar({
     // Clear auth state via Zustand store
     useAuthStore.getState().logout();
 
+    // Clear sessionStorage entries set during login
+    sessionStorage.removeItem("userName");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("isAuthenticated");
+    sessionStorage.removeItem("auth-storage");
+
     // Call custom logout handler if provided
     if (onLogout) {
       onLogout();

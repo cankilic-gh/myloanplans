@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -81,6 +82,7 @@ export default function LoginPage() {
         sessionStorage.setItem("userName", data.user.name);
         sessionStorage.setItem("userEmail", data.user.email);
         sessionStorage.setItem("isAuthenticated", "true");
+        useAuthStore.getState().login(data.user.name, data.user.email);
       }
 
       // Navigate to dashboard
