@@ -28,6 +28,10 @@ interface SavingsGoalFormData {
   projectionYears: number;
 }
 
+function getUserEmail(): string {
+  return (typeof window !== "undefined" ? sessionStorage.getItem("userEmail") : null) || "";
+}
+
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -170,7 +174,12 @@ export default function SavingsTracker() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("/api/budget/savings");
+      const res = await fetch("/api/budget/savings", {
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": getUserEmail(),
+        },
+      });
       if (!res.ok) {
         throw new Error(`Failed to fetch savings: ${res.status}`);
       }
@@ -233,7 +242,10 @@ export default function SavingsTracker() {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": getUserEmail(),
+        },
         body: JSON.stringify(form),
       });
 
@@ -261,6 +273,10 @@ export default function SavingsTracker() {
     try {
       const res = await fetch(`/api/budget/savings/${deleteConfirmId}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": getUserEmail(),
+        },
       });
       if (!res.ok) {
         throw new Error(`Delete failed: ${res.status}`);
