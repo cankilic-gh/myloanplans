@@ -145,20 +145,7 @@ export async function GET(request: NextRequest) {
           gte: startOfYear,
           lte: endOfYear,
         },
-        AND: [
-          {
-            OR: [
-              { source: { not: "recurring" } },
-              { source: { equals: null as unknown as undefined } },
-            ],
-          },
-          {
-            OR: [
-              { note: { equals: null as unknown as undefined } },
-              { note: { not: { startsWith: "Recurring:" } } },
-            ],
-          },
-        ],
+        NOT: { source: "recurring" },
       },
       select: {
         amount: true,
