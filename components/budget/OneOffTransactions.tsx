@@ -82,7 +82,13 @@ export default function OneOffTransactions() {
 
   const loadAccounts = useCallback(async () => {
     try {
-      const rows = await fetchAccounts();
+      let rows = await fetchAccounts();
+      if (rows.length === 0) {
+        // Auto-create a default account
+        const { createAccount } = await import("@/lib/api/budget/accounts");
+        const newAcc = await createAccount({ name: "Main Account", currency: "USD" });
+        rows = [newAcc];
+      }
       setAccounts(rows);
       if (rows.length > 0 && !accountId) {
         setAccountId(rows[0].id);
