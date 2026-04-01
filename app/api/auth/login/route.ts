@@ -84,10 +84,12 @@ export async function POST(request: NextRequest) {
         id: authData.user.id,
       },
     });
-  } catch (error) {
-    console.error("[LOGIN] ❌ Unexpected error:", error);
+  } catch (error: any) {
+    console.error("[LOGIN] ❌ Unexpected error:", error?.message || error);
+    console.error("[LOGIN] ❌ Stack:", error?.stack);
+    console.error("[LOGIN] ❌ Cause:", error?.cause?.message || error?.cause);
     return NextResponse.json(
-      { error: "Bir hata oluştu. Lütfen tekrar deneyin." },
+      { error: "Bir hata oluştu. Lütfen tekrar deneyin.", detail: error?.message || String(error) },
       { status: 500 }
     );
   }
