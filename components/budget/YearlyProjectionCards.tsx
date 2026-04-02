@@ -53,7 +53,7 @@ export default function YearlyProjectionCards() {
   const [data, setData] = useState<ProjectionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>("yearly");
+  const [viewMode, setViewMode] = useState<ViewMode>("monthly");
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // 0-based
 
   const loadProjection = useCallback(async () => {
