@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { fetchCategories, createCategory, deleteCategory, type Category } from "@/lib/api/budget/categories";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Trash2 } from "lucide-react";
 
 export default function CategoriesList() {
+  const [expanded, setExpanded] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<"all" | "EXPENSE" | "INCOME">("all");
@@ -40,100 +42,138 @@ export default function CategoriesList() {
       ? categories
       : categories.filter((c) => c.type === selectedType);
 
-  if (loading) {
-    return (
-      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg">
-        <div className="h-4 bg-slate-200 rounded w-32 mb-4 animate-pulse"></div>
-        <div className="space-y-2">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-6 bg-slate-200 rounded animate-pulse"></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
-      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg h-full flex flex-col">
-        <div className="flex items-center justify-between mb-3">
-          <div className="text-sm font-semibold text-slate-700">Categories Expense / Income</div>
-          <button
-            type="button"
-            onClick={() => setIsAddModalOpen(true)}
-            className="px-3 py-1 text-xs bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors"
-          >
-            Add
-          </button>
-        </div>
-        
-        {/* Filter buttons */}
-        <div className="flex gap-2 mb-4">
-          <button
-            type="button"
-            onClick={() => setSelectedType("all")}
-            className={`px-3 py-1 text-xs rounded-md transition-colors ${
-              selectedType === "all"
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            All
-          </button>
-          <button
-            type="button"
-            onClick={() => setSelectedType("EXPENSE")}
-            className={`px-3 py-1 text-xs rounded-md transition-colors ${
-              selectedType === "EXPENSE"
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            Expense
-          </button>
-          <button
-            type="button"
-            onClick={() => setSelectedType("INCOME")}
-            className={`px-3 py-1 text-xs rounded-md transition-colors ${
-              selectedType === "INCOME"
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            Income
-          </button>
-        </div>
+      <div className="bg-white rounded-lg border border-slate-200 shadow-lg overflow-hidden">
+        {/* Collapsible header */}
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+        >
+          <span className="text-sm font-semibold text-slate-700">Categories Expense / Income</span>
+          <div className="flex items-center gap-2">
+            <span
+              className="px-3 py-1 text-xs bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsAddModalOpen(true);
+              }}
+            >
+              Add
+            </span>
+            <svg
+              className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+                expanded ? "rotate-180" : ""
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
 
-        {/* Categories list */}
-        <div className="flex-1 overflow-y-auto space-y-2">
-          {filteredCategories.length === 0 ? (
-            <div className="text-sm text-slate-500">No categories found.</div>
-          ) : (
-            filteredCategories.map((cat) => (
-              <div
-                key={cat.id}
-                className={`px-3 py-2 rounded-md text-sm flex items-center justify-between group ${
-                  cat.type === "INCOME"
-                    ? "bg-emerald-50 text-emerald-700 border border-slate-200 border-emerald-200"
-                    : "bg-red-50 text-red-700 border border-slate-200 border-red-200"
-                }`}
-              >
-                <span>{cat.name}</span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCategoryToDelete(cat);
-                  }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-200 rounded text-red-700"
-                  title="Delete category"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+        {/* Expandable body */}
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="border-t border-slate-100 p-4 flex flex-col">
+                {loading ? (
+                  <div className="space-y-2">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="h-6 bg-slate-200 rounded animate-pulse"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    {/* Filter buttons */}
+                    <div className="flex gap-2 mb-4">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedType("all")}
+                        className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                          selectedType === "all"
+                            ? "bg-slate-900 text-white"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        All
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedType("EXPENSE")}
+                        className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                          selectedType === "EXPENSE"
+                            ? "bg-slate-900 text-white"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        Expense
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedType("INCOME")}
+                        className={`px-3 py-1 text-xs rounded-md transition-colors ${
+                          selectedType === "INCOME"
+                            ? "bg-slate-900 text-white"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        Income
+                      </button>
+                    </div>
+
+                    {/* Categories list */}
+                    <div
+                      className="flex-1 overflow-y-auto space-y-2 max-h-[300px]"
+                      style={{
+                        scrollbarWidth: "thin",
+                        scrollbarColor: "rgba(148,163,184,0.3) transparent",
+                      }}
+                    >
+                      {filteredCategories.length === 0 ? (
+                        <div className="text-sm text-slate-500">No categories found.</div>
+                      ) : (
+                        filteredCategories.map((cat) => (
+                          <div
+                            key={cat.id}
+                            className={`px-3 py-2 rounded-md text-sm flex items-center justify-between group ${
+                              cat.type === "INCOME"
+                                ? "bg-emerald-50 text-emerald-700 border border-slate-200 border-emerald-200"
+                                : "bg-red-50 text-red-700 border border-slate-200 border-red-200"
+                            }`}
+                          >
+                            <span>{cat.name}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCategoryToDelete(cat);
+                              }}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-200 rounded text-red-700"
+                              title="Delete category"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
-            ))
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
 
       {/* Delete Confirmation Dialog */}

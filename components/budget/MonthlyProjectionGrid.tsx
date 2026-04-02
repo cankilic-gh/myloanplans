@@ -175,6 +175,7 @@ function MonthCard({
 }
 
 export default function MonthlyProjectionGrid() {
+  const [gridExpanded, setGridExpanded] = useState(false);
   const [data, setData] = useState<ProjectionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -253,28 +254,62 @@ export default function MonthlyProjectionGrid() {
   const currentYear = now.getFullYear();
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-lg">
-      <div className="text-sm font-semibold text-slate-700 mb-4">
-        Monthly Projection {data.year}
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {data.months.map((mp, index) => {
-          const isCurrent = mp.month === currentMonth && mp.year === currentYear;
-          const isPast =
-            mp.year < currentYear ||
-            (mp.year === currentYear && mp.month < currentMonth);
+    <div className="bg-white rounded-lg border border-slate-200 shadow-lg overflow-hidden">
+      {/* Collapsible header */}
+      <button
+        type="button"
+        onClick={() => setGridExpanded((prev) => !prev)}
+        className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+      >
+        <span className="text-sm font-semibold text-slate-700">
+          Monthly Projection {data.year}
+        </span>
+        <svg
+          className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+            gridExpanded ? "rotate-180" : ""
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
 
-          return (
-            <MonthCard
-              key={`${mp.year}-${mp.month}`}
-              mp={mp}
-              isCurrent={isCurrent}
-              isPast={isPast}
-              index={index}
-            />
-          );
-        })}
-      </div>
+      {/* Expandable body */}
+      <AnimatePresence>
+        {gridExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-slate-100 p-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                {data.months.map((mp, index) => {
+                  const isCurrent = mp.month === currentMonth && mp.year === currentYear;
+                  const isPast =
+                    mp.year < currentYear ||
+                    (mp.year === currentYear && mp.month < currentMonth);
+
+                  return (
+                    <MonthCard
+                      key={`${mp.year}-${mp.month}`}
+                      mp={mp}
+                      isCurrent={isCurrent}
+                      isPast={isPast}
+                      index={index}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
