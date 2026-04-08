@@ -1,7 +1,13 @@
 import { SignJWT, jwtVerify } from "jose";
 import { NextRequest } from "next/server";
 
-const getSecret = () => new TextEncoder().encode(process.env.JWT_SECRET || "fallback-dev-secret");
+const getSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET environment variable is not set");
+  }
+  return new TextEncoder().encode(secret);
+};
 
 export interface TokenPayload {
   userId: string;
