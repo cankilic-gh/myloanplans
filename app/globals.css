@@ -1,31 +1,169 @@
 @import "tailwindcss";
 
+/* ============================================================
+   MyLoanPlans — Light Premium Fintech Design System
+   Stripe × Linear × Mercury × Apple
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --input: #ffffff;
-  --input-foreground: #171717;
-  --border: #e2e8f0;
-  --ring: #2563eb;
+  --background: #fbfcfe;
+  --foreground: #0b1220;
+  --muted: #5b6b85;
+  --card: #ffffff;
+  --border: #e7ecf3;
+  --border-strong: #d6deea;
+
+  /* Brand */
+  --brand: #2f6bff;
+  --brand-600: #1f57e6;
+  --brand-foreground: #ffffff;
+  --mint: #2bd4a4;
+  --lavender: #8b7bff;
+  --gold: #f7b955;
+  --rose: #ff6b8b;
+
+  --ring: #2f6bff;
+  --shadow-color: 220 40% 30%;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-input: var(--input);
-  --color-input-foreground: var(--input-foreground);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-brand: var(--brand);
+  --color-brand-600: var(--brand-600);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-mint: var(--mint);
+  --color-lavender: var(--lavender);
+  --color-gold: var(--gold);
+  --color-rose: var(--rose);
   --color-ring: var(--ring);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: #ffffff;
+  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+/* ---------- Ambient backgrounds ---------- */
+.mesh-bg {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(at 8% 0%, rgba(47, 107, 255, 0.10) 0px, transparent 50%),
+    radial-gradient(at 92% 8%, rgba(139, 123, 255, 0.10) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(43, 212, 164, 0.08) 0px, transparent 55%);
+}
+.grid-overlay {
+  background-image:
+    linear-gradient(to right, rgba(11, 18, 32, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 18, 32, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 78%);
+}
+
+/* ---------- Glass / cards ---------- */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.8) inset,
+    0 12px 40px -12px hsl(var(--shadow-color) / 0.18);
+}
+.card-premium {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.04),
+    0 8px 24px -12px hsl(var(--shadow-color) / 0.14);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.card-premium:hover {
+  border-color: var(--border-strong);
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.05),
+    0 18px 48px -16px hsl(var(--shadow-color) / 0.22);
+}
+
+/* ---------- Text effects ---------- */
+.text-gradient {
+  background: linear-gradient(120deg, #2f6bff 0%, #8b7bff 55%, #2bd4a4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.balance-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ---------- Buttons ---------- */
+.btn-brand {
+  background: linear-gradient(180deg, #3b76ff 0%, #1f57e6 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px -6px rgba(47, 107, 255, 0.6), 0 1px 0 0 rgba(255, 255, 255, 0.25) inset;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.btn-brand:hover { transform: translateY(-1px); filter: brightness(1.04); box-shadow: 0 10px 26px -8px rgba(47, 107, 255, 0.65); }
+.btn-brand:active { transform: translateY(0); }
+
+/* ---------- Scrollbars ---------- */
+.scroll-thin { scrollbar-width: thin; scrollbar-color: rgba(47, 107, 255, 0.35) transparent; }
+.scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: rgba(47, 107, 255, 0.30); border-radius: 9999px; }
+.scroll-thin::-webkit-scrollbar-thumb:hover { background: rgba(47, 107, 255, 0.5); }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Animations ---------- */
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+
+/* ---------- Lenis smooth scroll (recommended base rules) ---------- */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ---------- Cinematic reveal primitives ---------- */
+/* Wrappers that clip their child for the mask/translateY word reveal.
+   GSAP sets the per-word transform; these just guarantee the clip + GPU hint. */
+.hero-word,
+.pin-word { backface-visibility: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-float { animation: none; }
+  /* Hard guarantee: never leave revealed copy hidden if JS/motion is skipped. */
+  .hero-word,
+  .pin-word { transform: none !important; opacity: 1 !important; filter: none !important; }
+}
+
+/* hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
