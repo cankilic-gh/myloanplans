@@ -260,7 +260,7 @@ export function CinematicHero() {
       {/* --- Floating isometric diorama (in flow, fills the lower area) --- */}
       <div
         ref={videoWrapRef}
-        className="relative z-[1] w-full max-w-6xl flex-1 min-h-0 -mt-2 will-change-transform"
+        className="relative z-[1] w-full max-w-6xl flex-1 min-h-0 -mt-2 will-change-transform hidden sm:block"
         aria-hidden
       >
         {videoOk ? (
