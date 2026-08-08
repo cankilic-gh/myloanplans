@@ -12,7 +12,7 @@ export function SiteFooter() {
             MyLoanPlans
           </div>
           <p className="mt-3 text-sm text-muted max-w-xs">
-            A private, no-signup mortgage & budget planner. Your data lives only in your browser.
+            A private, no-signup mortgage, budget & auto planner. Your data lives only in your browser.
           </p>
         </div>
         <div className="text-sm">
@@ -20,6 +20,7 @@ export function SiteFooter() {
           <ul className="space-y-2 text-muted">
             <li><Link href="/loan" className="hover:text-foreground">Mortgage / Loan Calculator</Link></li>
             <li><Link href="/budget" className="hover:text-foreground">Budget Planner</Link></li>
+            <li><Link href="/auto" className="hover:text-foreground">Lease vs. Finance Calculator</Link></li>
           </ul>
         </div>
         <div className="text-sm">
